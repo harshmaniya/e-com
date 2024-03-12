@@ -10,7 +10,18 @@ const Product = ({ params }) => {
 
     console.log("params----- :", params.id);
 
-    const [qty, setQty] = useState(1);
+    const qtyData = JSON.parse(localStorage.getItem('cartData')) || []
+    let qtyItemIndex
+
+    if (qtyData.length > 0) {
+        qtyItemIndex = qtyData.findIndex(
+            (item) => item.id === params.id
+        )
+    }
+
+    const [qty, setQty] = useState(
+        qtyItemIndex !== undefined && qtyItemIndex !== -1 ? qtyData[qtyItemIndex].qty : 1
+    )
 
     const handleIncreaseQty = () => {
         setQty(prev => prev + 1);
@@ -31,33 +42,40 @@ const Product = ({ params }) => {
     const addToCart = () => {
         const existingData = localStorage.getItem('cartData');
 
-        let newData = {
+        const newItem = {
             id: params.id,
             name: data.getProduct.name,
             color: "",
             image: data.getProduct.images[0],
             price: data.getProduct.price,
-            qty
-        }
+            qty,
+        };
 
         if (existingData) {
             const parsedData = JSON.parse(existingData);
 
-            const updatedData = [...parsedData, newData];
-            localStorage.setItem('cartData', JSON.stringify(updatedData));
-        } else {
+            const existingItemIndex = parsedData.findIndex(
+                (item) => item.id === newItem.id && item.color === newItem.color
+            );
 
-            const initialData = [newData];
+            if (existingItemIndex !== -1) {
+                parsedData[existingItemIndex].qty = newItem.qty;
+            } else {
+                parsedData.push(newItem);
+            }
+
+            localStorage.setItem('cartData', JSON.stringify(parsedData));
+        } else {
+            const initialData = [newItem];
             localStorage.setItem('cartData', JSON.stringify(initialData));
         }
-    }
+    };
 
     const [heroImg, setHeroImg] = useState(null);
 
     useEffect(() => {
         if (data && data.getProduct && data.getProduct.images && data.getProduct.images.length > 0) {
             setHeroImg(data.getProduct.images[0]);
-            // setColor(data.getProduct?.color[0]);
         }
     }, [data]);
 

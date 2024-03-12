@@ -5,6 +5,7 @@ import "../../globals.css";
 import { GET_ALL_PRODUCTS } from '@/apollo/client/query';
 import ProductCard from '@/app/_components/ProductCard';
 import { useQuery } from '@apollo/client';
+import Link from 'next/link';
 
 const products = () => {
 
@@ -16,11 +17,13 @@ const products = () => {
             <div className='flex gap-8'>
                 {data ?
                     data?.getAllProducts?.map((pdata) => (
+                        <Link href={`/products/`+pdata?._id}>
                         <ProductCard
-                            name={pdata.name}
-                            img={pdata.images[0]}
-                            price={pdata.price}
+                            name={pdata?.name}
+                            img={pdata?.images[0]}
+                            price={pdata?.price}
                         />
+                        </Link>
                     ))
                     :
                     <h1>loading...</h1>
