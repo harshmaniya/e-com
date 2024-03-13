@@ -15,6 +15,7 @@ const Product = ({ params }) => {
     const qtyData = JSON.parse(localStorage.getItem('cartData')) || []
     let qtyItemIndex
 
+
     if (qtyData.length > 0) {
         qtyItemIndex = qtyData.findIndex(
             (item) => item.id === params.id
@@ -33,7 +34,13 @@ const Product = ({ params }) => {
         setQty(prev => prev > 1 ? prev - 1 : 1);
     }
 
-    const [color, setColor] = useState(null);
+    
+
+    // const handleColor = () => {
+    //     setColor()
+    // }
+
+    
 
     const { data, loading } = useQuery(GET_PRODUCT, {
         variables: {
@@ -41,13 +48,16 @@ const Product = ({ params }) => {
         }
     });
 
+    const [color, setColor] = useState({});
+    console.log("🚀 ~ Product ~ color:", color)
+
     const addToCart = () => {
         const existingData = localStorage.getItem('cartData');
 
         const newItem = {
             id: params.id,
             name: data.getProduct.name,
-            color: "",
+            color,
             image: data.getProduct.images[0],
             price: data.getProduct.price,
             qty,
@@ -57,7 +67,7 @@ const Product = ({ params }) => {
             const parsedData = JSON.parse(existingData);
 
             const existingItemIndex = parsedData.findIndex(
-                (item) => item.id === newItem.id && item.color === newItem.color
+                (item) => item.id === newItem.id && item.color._id === newItem.color._id
             );
 
             if (existingItemIndex !== -1) {
@@ -71,13 +81,16 @@ const Product = ({ params }) => {
             const initialData = [newItem];
             localStorage.setItem('cartData', JSON.stringify(initialData));
         }
+
+        router.push('/cart')
     };
 
     const [heroImg, setHeroImg] = useState(null);
 
     useEffect(() => {
         if (data && data.getProduct && data.getProduct.images && data.getProduct.images.length > 0) {
-            setHeroImg(data.getProduct.images[0]);
+            setColor(data.getProduct.colors[0])
+            setHeroImg(data.getProduct.images[0])
         }
     }, [data]);
 
@@ -86,7 +99,7 @@ const Product = ({ params }) => {
         <>
             <div className='flex justify-center'>
                 <div className='p-8'>
-                    <Button className={"mb-4"} onClick={()=>router.back()} title={"BACK TO PRODUCTS"} />
+                    <Button className={"mb-4"} onClick={() => router.back()} title={"BACK TO PRODUCTS"} />
                     {loading && <h1>Loading...</h1>}
                     {heroImg && (
                         <div className='max-h-[400px] w-auto relative overflow-hidden'>
@@ -109,7 +122,7 @@ const Product = ({ params }) => {
                             ))}
                     </div>
                 </div>
-                <div className='p-8 w-full md:w-1/2'>
+                <div className='p-8 w-full md:w-1/2 mt-12'>
                     <h1 className='text-4xl font-bold mb-4'>{data?.getProduct?.name}</h1>
                     <h2 className='text-xl font-bold text-amber-700 mb-6'>$ {data?.getProduct?.price}</h2>
                     <p className='text-gray-700 mb-6 leading-loose'>{data?.getProduct?.description}</p>
@@ -129,19 +142,28 @@ const Product = ({ params }) => {
                         <div className='flex-1 md:w-1/2'>
                             <h3 className='text-lg font-bold mb-2'>Brand:</h3>
                             <p>{data?.getProduct?.brand?.name}</p>
-                        </div>                       
+                        </div>
                     </div>
 
                     <hr className='my-8' />
 
                     <div className='flex flex-col md:flex-row md:justify-between'>
-                        <div className='flex-1 md:w-1/2'>
-                            <h3 className='text-lg font-bold mb-2'>Colors :</h3>
+                        <div className='flex md:w-1/2'>
+                            <div className='flex gap-2 items-center'>
+                                <h3 className='text-lg font-bold'>Colors :</h3>
+                                {data?.getProduct?.colors?.map((itemColor) => (
+                                    <div
+                                        onClick={()=>setColor(itemColor)}
+                                        key={itemColor._id}
+                                        style={{ width: '20px', height: '20px', backgroundColor: itemColor.hexCode, borderRadius: '50%', padding: '10px' }}>
+                                    </div>
+                                ))}
+                            </div>
                             <p>{data?.getProduct?.color?.name}</p>
                         </div>
                     </div>
 
-                    <div className='flex flex-col md:flex-row md:justify-between'>
+                    <div className='flex flex-col md:flex-row md:justify-between mt-2'>
                         <p className='flex font-bold text-4xl space-x-8 py-4'>
                             <button onClick={handleDecreaseQty}>-</button>
                             <span>{qty}</span>

@@ -51,7 +51,7 @@ const getProduct = async (_, args) => {
             .populate([
                 { path: "brand", select: "name" },
                 { path: "category", select: "name" },
-                // { path: "colors", select: "name hexCode" }
+                { path: "colors", select: "name hexCode" }
             ])
         if (!getProduct) return new Error("not found product!")
         console.log("🚀 ~ getProduct ~ getProduct:", getProduct)
