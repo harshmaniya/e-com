@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Button = ({ title, className, ...rest }) => {
+    console.log('===button')
     return (
         <button
             {...rest}

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import "../../globals.css";
-import SideBar from '@/app/_components/sideBar'
+import SideBar from '@/app/_components/SideBar'
 import { GET_ALL_PRODUCTS } from '@/apollo/client/query';
 import ProductCard from '@/app/_components/ProductCard';
 import { useQuery } from '@apollo/client';
