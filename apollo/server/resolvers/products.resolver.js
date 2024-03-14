@@ -1,73 +1,107 @@
-import { Brands, Products } from "@/lib/models"
+import { Product } from "@/lib/models";
 
-const addProduct = async (_, args) => {
+const addProduct = async (_, { input }) => {
     try {
-        const { input } = args
-        const SKUisExist = await Products.findOne({ sku: input.sku })
-        if (SKUisExist) return new Error("this SKU already taken!")
+        const { sku } = input;
 
-        // brand
-        // if ( typeof input.brand === String ) {
-        //     const BrandIsExist = await Brands.findOne({ name: input.brand })
-        //     if (!BrandIsExist) return new Error("given brand doesn't exist!")
-        //     const df = await Brands.create({name: input.brand})           
-        // }
+        // Check if SKU already exists
+        const existingProduct = await Product.findOne({ sku });
+        if (existingProduct) {
+            throw new Error("SKU already taken!");
+        }
 
-        // colors
+        // Create new product
+        const newProduct = await Product.create(input);
+        console.log("New product created:", newProduct);
 
-        // category
-
-        const addProduct = await Products.create(input)
-        if (!addProduct) return new Error("getting error in product creation!")
-        console.log("🚀 ~ addProduct ~ addProduct:", addProduct)
-        return addProduct;
+        return newProduct;
     } catch (error) {
-        console.log("🚀 ~ addProduct ~ error:", error.message)
-        return new Error("🚀 ~ addProduct ~ error:", error.message)
+        console.error("Error adding product:", error);
+        throw new Error("Failed to add product");
     }
-}
+};
 
 const getAllProducts = async () => {
     try {
-        const getAllProducts = await Products.find()
-            .populate([
-                { path: "brand", select: "name" },
-                { path: "category", select: "name" },
-                // { path: "colors", select: "name hexCode" }
-            ])
-        if (!getAllProducts) return new Error("not found product!")
-        console.log("🚀 ~ getAllProducts ~ getAllProducts:", getAllProducts)
-        return getAllProducts
-    } catch (error) {
-        console.log("🚀 ~ getAllProducts ~ error:", error.message)
-        return new Error(error.message)
-    }
-}
-
-const getProduct = async (_, args) => {
-    try {
-        const { _id } = args
-        const getProduct = await Products.findById({ _id })
+        // Fetch all products and populate related fields
+        const allProducts = await Product.find()
             .populate([
                 { path: "brand", select: "name" },
                 { path: "category", select: "name" },
                 { path: "colors", select: "name hexCode" }
-            ])
-        if (!getProduct) return new Error("not found product!")
-        console.log("🚀 ~ getProduct ~ getProduct:", getProduct)
-        return getProduct
+            ]);
+        console.log("Fetched products:", allProducts);
+
+        return allProducts;
     } catch (error) {
-        console.log("🚀 ~ getProduct ~ error:", error.message)
-        return new Error(error.message)
+        console.error("Error fetching products:", error);
+        throw new Error("Failed to fetch products");
     }
-}
+};
+
+const getProduct = async (_, { _id }) => {
+    try {
+        // Fetch product by ID and populate related fields
+        const product = await Product.findById(_id)
+            .populate([
+                { path: "brand", select: "name" },
+                { path: "category", select: "name" },
+                { path: "colors", select: "name hexCode" }
+            ]);
+        if (!product) {
+            throw new Error("Product not found");
+        }
+        console.log("Fetched product:", product);
+
+        return product;
+    } catch (error) {
+        console.error("Error fetching product:", error);
+        throw new Error("Failed to fetch product");
+    }
+};
+
+const updateProduct = async (_, { input }) => {
+    try {
+        const { _id } = input;
+
+        // Update product
+        const updatedProduct = await Product.findByIdAndUpdate(_id, input, { new: true });
+        if (!updatedProduct) {
+            throw new Error("Product not found");
+        }
+        console.log("Updated product:", updatedProduct);
+
+        return updatedProduct;
+    } catch (error) {
+        console.error("Error updating product:", error);
+        throw new Error("Failed to update product");
+    }
+};
+
+const deleteProduct = async (_, { _id }) => {
+    try {
+        // Delete product
+        const deletedProduct = await Product.findByIdAndDelete(_id);
+        if (!deletedProduct) {
+            throw new Error("Product not found");
+        }
+        console.log("Deleted product:", deletedProduct);
+
+        return deletedProduct;
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        throw new Error("Failed to delete product");
+    }
+};
 
 export const productResolver = {
     Query: {
         getAllProducts,
         getProduct
-    },  
+    },
     Mutation: {
-        addProduct
+        addProduct,
+        updateProduct,
+        deleteProduct
     }
-}
+};
