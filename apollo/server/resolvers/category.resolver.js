@@ -1,16 +1,18 @@
-import { Category } from "@/lib/models";
+import { Category, Product } from "@/lib/models";
 
+
+// done
 const addCategory = async (_, { name }) => {
     try {
         // Data validation
         if (!name) {
-            throw new Error("Category name is required.");
+            return new Error("Category name is required.");
         }
 
         // Check if category already exists
         const existingCategory = await Category.findOne({ name });
         if (existingCategory) {
-            throw new Error("Category already exists!");
+            return new Error("Category already exists!");
         }
 
         // Create new category
@@ -20,10 +22,11 @@ const addCategory = async (_, { name }) => {
         return newCategory;
     } catch (error) {
         console.error("Error adding category:", error);
-        throw new Error("Failed to add category");
+        return new Error("Failed to add category");
     }
 };
 
+// done
 const getAllCategories = async () => {
     try {
         // Fetch all categories
@@ -33,44 +36,48 @@ const getAllCategories = async () => {
         return allCategories;
     } catch (error) {
         console.error("Error fetching categories:", error);
-        throw new Error("Failed to fetch categories");
+        return new Error("Failed to fetch categories");
     }
 };
 
+// done
 const updateCategory = async (_, { _id, name }) => {
     try {
         // Data validation
         if (!name) {
-            throw new Error("Category name is required.");
+            return new Error("Category name is required.");
         }
 
         // Update category
         const updatedCategory = await Category.findByIdAndUpdate(_id, { name }, { new: true });
         if (!updatedCategory) {
-            throw new Error("Category not found");
+            return new Error("Category not found");
         }
         console.log("Updated category:", updatedCategory);
 
         return updatedCategory;
     } catch (error) {
         console.error("Error updating category:", error);
-        throw new Error("Failed to update category");
+        return new Error("Failed to update category");
     }
 };
 
+// done
 const deleteCategory = async (_, { _id }) => {
     try {
         // Delete category
         const deletedCategory = await Category.findByIdAndDelete(_id);
         if (!deletedCategory) {
-            throw new Error("Category not found");
+            return new Error("Category not found");
         }
+
+        const isAssigned = await Product.findOne({ category: _id });
         console.log("Deleted category:", deletedCategory);
 
         return deletedCategory;
     } catch (error) {
         console.error("Error deleting category:", error);
-        throw new Error("Failed to delete category");
+        return new Error("Failed to delete category");
     }
 };
 
