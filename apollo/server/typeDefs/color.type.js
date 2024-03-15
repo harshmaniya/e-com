@@ -26,7 +26,7 @@ type Query {
 type Mutation {
     addColor(input: AddColorInput!): Color
     updateColor(input: UpdateColorInput!): Color
-    deleteColor(_id: ID!): Color
+    deleteColor(_id: ID!): String
 }
 `;
 
