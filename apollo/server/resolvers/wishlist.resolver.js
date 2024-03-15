@@ -1,4 +1,4 @@
-import { Wishlist } from "./models";
+import { Wishlist } from "@/lib/models";
 
 const getWishlist = async (_, { userId }) => {
     try {
@@ -41,7 +41,7 @@ const removeFromWishlist = async (_, { userId, productId }) => {
     }
 };
 
-export const wishlistResolvers = {
+export const wishlistResolver = {
     Query: {
         getWishlist
     },

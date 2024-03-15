@@ -1,5 +1,4 @@
 import { Brand, Category, Color, Product } from "@/lib/models";
-import { populate } from "dotenv";
 
 // done
 const addProduct = async (_, { input }) => {
@@ -43,7 +42,7 @@ const addProduct = async (_, { input }) => {
     }
 };
 
-
+// done
 const getAllProducts = async () => {
     try {
         // Fetch all products and populate related fields
@@ -51,8 +50,11 @@ const getAllProducts = async () => {
             .populate([
                 { path: "brand" },
                 { path: "category" },
-                { path: "colors", populate: { path: "color" } }
+                { path: "colors" }
             ])
+
+        if (!allProducts) return new Error("Products not found");
+
         console.log("Fetched products:", allProducts);
 
         return allProducts;
@@ -62,33 +64,69 @@ const getAllProducts = async () => {
     }
 };
 
+// done
 const getProduct = async (_, { _id }) => {
     try {
         // Fetch product by ID and populate related fields
         const product = await Product.findById(_id)
             .populate([
-                { path: "brand", select: "name" },
-                { path: "category", select: "name" },
-                { path: "colors", select: "name hexCode" }
-            ]);
-        if (!product) {
-            return new Error("Product not found");
-        }
+                { path: "brand" },
+                { path: "category" },
+                { path: "colors" }
+            ])
+        if (!product) return new Error("Product not found");
         console.log("Fetched product:", product);
 
         return product;
     } catch (error) {
-        console.error("Error fetching product:", error);
+        console.error("Error fetching product:", error.message);
         return new Error("Failed to fetch product");
     }
 };
 
+
+// done
 const updateProduct = async (_, { input }) => {
     try {
-        const { _id } = input;
+        const { _id, ...rest } = input;
+
+        if (rest.sku) {
+            const existingSKU = await Product.findOne({ sku: rest.sku });
+            if (existingSKU) {
+                return new Error("SKU already taken!");
+            }
+        }
+
+        if (rest.brand) {
+            const brandIsExist = await Brand.findById({ _id: rest.brand });
+            if (!brandIsExist) {
+                return new Error("Brand not found!");
+            }
+        }
+
+        if (rest.category) {
+            const categoryIsExist = await Category.findById({ _id: rest.category });
+            if (!categoryIsExist) {
+                return new Error("Category not found!");
+            }
+        }
+
+        if (rest.colors) {
+            try {
+                await Promise.all(rest.colors.map(async (color) => {
+                    const colorsExist = await Color.findOne({ _id: color });
+                    if (!colorsExist) {
+                        return new Error("Color not found!");
+                    }
+                }));
+            } catch (error) {
+                console.log("🚀 ~ error:", error.message);
+                return new Error("One or more colors not found!");
+            }
+        }
 
         // Update product
-        const updatedProduct = await Product.findByIdAndUpdate(_id, input, { new: true });
+        const updatedProduct = await Product.findByIdAndUpdate(_id, { rest }, { new: true });
         if (!updatedProduct) {
             return new Error("Product not found");
         }
@@ -101,6 +139,7 @@ const updateProduct = async (_, { input }) => {
     }
 };
 
+// done
 const deleteProduct = async (_, { _id }) => {
     try {
         // Delete product
@@ -110,7 +149,7 @@ const deleteProduct = async (_, { _id }) => {
         }
         console.log("Deleted product:", deletedProduct);
 
-        return deletedProduct;
+        return "Product deleted successfully";
     } catch (error) {
         console.error("Error deleting product:", error);
         return new Error("Failed to delete product");

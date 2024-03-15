@@ -1,59 +1,56 @@
 import { gql } from '@apollo/client'
 
 export const GET_PRODUCT = gql`
-query GetProduct($id: ID) {
-    getProduct(_id: $id) {
-      _id
+query GetProduct($id: ID!) {
+  getProduct(_id: $id) {
+    _id
+    name
+    price
+    description
+    stock
+    brand {
       name
-      price
-      description
-      stock    
-      brand {
-        _id
-        name
-      }
-      category {
-        _id
-        name
-      }
-      sku
-      colors {
-        _id
-        name
-        hexCode
-      }
-      images
-      freeShipping
     }
+    category {
+      name
+    }
+    sku
+    colors {
+      name
+      hexCode
+    }
+    images
+    freeShipping
   }
+}
 `
 
 export const GET_ALL_PRODUCTS = gql`
 query GetAllProducts {
-    getAllProducts {
+  getAllProducts {
+    _id
+    name
+    price
+    description
+    stock
+    brand {
       _id
       name
-      price
-      description
-      stock    
-      brand {
-        _id
-        name
-      }
-      category {
-        _id
-        name
-      }
-      sku
-      colors {
-        _id
-        name
-        hexCode
-      }
-      images
-      freeShipping
     }
+    category {
+      _id
+      name
+    }
+    sku
+    colors {
+      _id
+      name
+      hexCode
+    }
+    images
+    freeShipping
   }
+}
 `
 
 export const GET_ALL_CATEGORY = gql`
