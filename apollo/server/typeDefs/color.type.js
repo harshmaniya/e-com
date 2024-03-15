@@ -7,7 +7,7 @@ type Color {
     name: String!
     hexCode: String!
 }
-  
+
 input AddColorInput {   
     name: String!
     hexCode: String!

@@ -14,7 +14,7 @@ const brand = gql`
   type Mutation {
     addBrand(name: String!): Brand
     updateBrand(_id: ID!, name: String!): Brand
-    deleteBrand(_id: ID!): Brand
+    deleteBrand(_id: ID!): String
   }
 `;
 

@@ -1,18 +1,19 @@
-import { Brand } from "@/lib/models";
+import { Brand, Product } from "@/lib/models";
 
-const addBrand = async (_, { input }) => {
+// done
+const addBrand = async (_, args) => {
     try {
-        const { name } = input;
+        const { name } = args;
 
         // Data validation
         if (!name) {
-            throw new Error("Brand name is required.");
+            return new Error("Brand name is required.");
         }
 
         // Check if brand already exists
         const existingBrand = await Brand.findOne({ name });
         if (existingBrand) {
-            throw new Error("Brand already exists!");
+            return new Error("Brand already exists!");
         }
 
         // Create new brand
@@ -22,10 +23,11 @@ const addBrand = async (_, { input }) => {
         return newBrand;
     } catch (error) {
         console.error("Error adding brand:", error);
-        throw new Error("Failed to add brand");
+        return new Error("Failed to add brand");
     }
 };
 
+// done
 const getAllBrands = async () => {
     try {
         const getAllBrands = await Brand.find()
@@ -38,42 +40,46 @@ const getAllBrands = async () => {
     }
 }
 
-const updateBrand = async (_, { _id, input }) => {
+// done
+const updateBrand = async (_, args) => {
     try {
-        const { name } = input;
+        const { _id, name } = args;
 
         // Data validation
         if (!name) {
-            throw new Error("Brand name is required.");
+            return new Error("Brand name is required.");
         }
 
         // Update brand
         const updatedBrand = await Brand.findByIdAndUpdate(_id, { name }, { new: true });
         if (!updatedBrand) {
-            throw new Error("Brand not found");
+            return new Error("Brand not found");
         }
         console.log("Updated brand:", updatedBrand);
 
         return updatedBrand;
     } catch (error) {
         console.error("Error updating brand:", error);
-        throw new Error("Failed to update brand");
+        return new Error("Failed to update brand");
     }
 };
 
+// done
 const deleteBrand = async (_, { _id }) => {
     try {
+
+        const isAssigned = await Product.findOne({ brand: _id });
+        if (isAssigned) return new Error("this brand is assigned to products");
+
         // Delete brand
         const deletedBrand = await Brand.findByIdAndDelete(_id);
-        if (!deletedBrand) {
-            throw new Error("Brand not found");
-        }
+        if (!deletedBrand) return new Error("Brand not found");
         console.log("Deleted brand:", deletedBrand);
 
-        return deletedBrand;
+        return "Brand deleted successfully";
     } catch (error) {
         console.error("Error deleting brand:", error);
-        throw new Error("Failed to delete brand");
+        return new Error("Failed to delete brand");
     }
 };
 

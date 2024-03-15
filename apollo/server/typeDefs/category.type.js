@@ -14,7 +14,7 @@ type Query {
 type Mutation {
     addCategory(name: String!): Category
     updateCategory(_id: ID!, name: String!): Category
-    deleteCategory(_id: ID!): Category
+    deleteCategory(_id: ID!): String
 }
 `;
 

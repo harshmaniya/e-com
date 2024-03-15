@@ -1,5 +1,7 @@
-import { Product } from "@/lib/models";
+import { Brand, Category, Color, Product } from "@/lib/models";
+import { populate } from "dotenv";
 
+// done
 const addProduct = async (_, { input }) => {
     try {
         const { sku } = input;
@@ -7,35 +9,56 @@ const addProduct = async (_, { input }) => {
         // Check if SKU already exists
         const existingProduct = await Product.findOne({ sku });
         if (existingProduct) {
-            throw new Error("SKU already taken!");
+            return new Error("SKU already taken!");
+        }
+
+        const brandIsExist = await Brand.findById({ _id: input.brand });
+        const categoryIsExist = await Category.findById({ _id: input.category });
+
+        if (!brandIsExist || !categoryIsExist) {
+            return new Error("Brand or Category not found!");
+        }
+
+        try {
+            await Promise.all(input.colors.map(async (color) => {
+                console.log("🚀 ~ input.colors.map ~ color:", color);
+                const colorsExist = await Color.findOne({ _id: color });
+                if (!colorsExist) {
+                    return new Error("Color not found!");
+                }
+            }));
+        } catch (error) {
+            console.log("🚀 ~ error:", error.message);
+            return new Error("One or more colors not found!");
         }
 
         // Create new product
         const newProduct = await Product.create(input);
         console.log("New product created:", newProduct);
 
-        return newProduct;
+        return "Product added successfully";
     } catch (error) {
         console.error("Error adding product:", error);
-        throw new Error("Failed to add product");
+        return new Error("Failed to add product");
     }
 };
+
 
 const getAllProducts = async () => {
     try {
         // Fetch all products and populate related fields
         const allProducts = await Product.find()
             .populate([
-                { path: "brand", select: "name" },
-                { path: "category", select: "name" },
-                { path: "colors", select: "name hexCode" }
-            ]);
+                { path: "brand" },
+                { path: "category" },
+                { path: "colors", populate: { path: "color" } }
+            ])
         console.log("Fetched products:", allProducts);
 
         return allProducts;
     } catch (error) {
         console.error("Error fetching products:", error);
-        throw new Error("Failed to fetch products");
+        return new Error("Failed to fetch products");
     }
 };
 
@@ -49,14 +72,14 @@ const getProduct = async (_, { _id }) => {
                 { path: "colors", select: "name hexCode" }
             ]);
         if (!product) {
-            throw new Error("Product not found");
+            return new Error("Product not found");
         }
         console.log("Fetched product:", product);
 
         return product;
     } catch (error) {
         console.error("Error fetching product:", error);
-        throw new Error("Failed to fetch product");
+        return new Error("Failed to fetch product");
     }
 };
 
@@ -67,14 +90,14 @@ const updateProduct = async (_, { input }) => {
         // Update product
         const updatedProduct = await Product.findByIdAndUpdate(_id, input, { new: true });
         if (!updatedProduct) {
-            throw new Error("Product not found");
+            return new Error("Product not found");
         }
         console.log("Updated product:", updatedProduct);
 
         return updatedProduct;
     } catch (error) {
         console.error("Error updating product:", error);
-        throw new Error("Failed to update product");
+        return new Error("Failed to update product");
     }
 };
 
@@ -83,14 +106,14 @@ const deleteProduct = async (_, { _id }) => {
         // Delete product
         const deletedProduct = await Product.findByIdAndDelete(_id);
         if (!deletedProduct) {
-            throw new Error("Product not found");
+            return new Error("Product not found");
         }
         console.log("Deleted product:", deletedProduct);
 
         return deletedProduct;
     } catch (error) {
         console.error("Error deleting product:", error);
-        throw new Error("Failed to delete product");
+        return new Error("Failed to delete product");
     }
 };
 

@@ -65,16 +65,15 @@ const updateCategory = async (_, { _id, name }) => {
 // done
 const deleteCategory = async (_, { _id }) => {
     try {
-        // Delete category
-        const deletedCategory = await Category.findByIdAndDelete(_id);
-        if (!deletedCategory) {
-            return new Error("Category not found");
-        }
-
         const isAssigned = await Product.findOne({ category: _id });
+        if (isAssigned) return new Error("this category is assigned to products");
+
+        const deletedCategory = await Category.findByIdAndDelete(_id);
+        if (!deletedCategory) return new Error("Category not found");
+
         console.log("Deleted category:", deletedCategory);
 
-        return deletedCategory;
+        return "Category deleted successfully";
     } catch (error) {
         console.error("Error deleting category:", error);
         return new Error("Failed to delete category");

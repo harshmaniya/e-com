@@ -49,9 +49,9 @@ type Query {
 }
 
 type Mutation {
-    addProduct(input: AddProductInput!): Product
+    addProduct(input: AddProductInput!): String
     updateProduct(input: UpdateProductInput!): Product
-    deleteProduct(_id: ID!): Product
+    deleteProduct(_id: ID!): String
 }
 `;
 
