@@ -1,40 +1,64 @@
-import { gql } from 'apollo-server';
+import { gql } from 'apollo-server'
 
 const Order = gql`
-  type Order {
-    _id: ID!
-    products: [OrderProduct!]!
-    user: User!
-    total: Float!
-  }
 
-  type OrderProduct {
-    pid: ID!
-    qty: Int!
-    color: Color
-  }
+type Order {
+  _id: ID!
+  user: User!
+  products: [ProductOrder!]!
+  order_date: String!
+  status: OrderStatus!
+  shipping_address: String!
+  payment_method: String!
+  payment_status: PaymentStatus!
+  total: Float!
+  createdAt: String!
+  updatedAt: String!
+}
 
-  input CreateOrderInput {
-    products: [OrderProductInput!]!
-    user: ID!
-    total: Float!
-  }
+type ProductOrder {
+  pid: Product!
+  qty: Int!
+  color: Color
+}
 
-  input OrderProductInput {
-    pid: ID!
-    qty: Int!
-    color: ID
-  }
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
 
-  type Query {
-    getOrderByUserId(userId: ID!): Order
-    getAllOrders: [Order!]!
-  }
+enum PaymentStatus {
+  PAID
+  PENDING
+  FAILED
+}
 
-  type Mutation {
-    createOrder(input: CreateOrderInput!): Order!
-  }
-  
-`;
+input OrderInput {
+  products: [ProductOrderInput!]!
+  shipping_address: String!
+  payment_method: String!
+  total: Float!
+}
 
-export default Order;
+input ProductOrderInput {
+  pid: ID!
+  qty: Int!
+  color: ID
+}
+
+type Query {
+  getOrderById(orderId: ID!): Order
+  getAllOrders: [Order!]!
+}
+
+type Mutation {
+  createOrder(input: OrderInput!): Order
+  updateOrderStatus(orderId: ID!, newStatus: OrderStatus!): Order
+  updateOrderPaymentStatus(orderId: ID!, newPaymentStatus: PaymentStatus!): Order
+  deleteOrder(orderId: ID!): Order
+}
+`
+export default Order

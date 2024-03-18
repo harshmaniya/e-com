@@ -12,8 +12,8 @@ const Wishlist = gql`
   }
 
   type Mutation {
-    addToWishlist(userId: ID!, productId: ID!): Wishlist
-    removeFromWishlist(userId: ID!, productId: ID!): Wishlist
+    addToWishlist(userId: ID!, productId: ID!): String
+    removeFromWishlist(userId: ID!, productId: ID!): String
   }
 `;
 

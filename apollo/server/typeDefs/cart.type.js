@@ -9,25 +9,34 @@ const Cart = gql`
   }
 
   type CartProduct {
-    pid: ID!
+    pid: Product
     qty: Int!
     color: Color
-  }
-
-  type Query {
-    getCartByUserId(userId: ID!): Cart
-  }
-
-  type Mutation {
-    addToCart(userId: ID!, product: CartProductInput!): Cart    
-    removeFromCart(userId: ID!, productId: ID!): Cart
   }
 
   input CartProductInput {
     pid: ID!
     qty: Int!
-    color: ID
+    color: ID!
   }
+
+  input updateQty {
+    pid: ID!
+    color: ID!
+  }
+
+  type Query {
+    getCart: Cart
+  }
+
+  type Mutation {
+    addToCart(input: [CartProductInput]!): Cart 
+    increaseQty(input: updateQty): String
+    decreaseQty(input: updateQty!): String
+    removeFromCart(userId: ID!, productId: ID!): Cart
+    clearCart: String
+  }
+
 `;
 
 export default Cart;

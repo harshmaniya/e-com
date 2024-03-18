@@ -1,0 +1,18 @@
+order: https://tailwindflex.com/@code-huit/order-sumamary
+
+
+
+
+<--------- Admin - inputs --------->
+
+- login > email, password
+- brand > name
+- category > name
+- color > name, hexCode
+- product > name, price, description, stock, colors, images, freeShipping
+
+<--------- User - inputs --------->
+
+- login > email, password
+- sign-up > 
+- 
