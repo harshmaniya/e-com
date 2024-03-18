@@ -1,9 +1,15 @@
+import DefaultLayout from '@/src/components/admin/Layouts/DefaultLayout'
+import AddProduct from '@/src/components/admin/Product/AddProduct'
 import React from 'react'
 
-const AddProduct = () => {
+const Page = () => {
   return (
-    <div>AddProduct</div>
+    <>
+      <DefaultLayout>
+        <AddProduct />
+      </DefaultLayout>
+    </>
   )
 }
 
-export default AddProduct
+export default Page

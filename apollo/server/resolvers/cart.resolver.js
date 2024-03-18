@@ -28,7 +28,7 @@ const addToCart = async (_, { input }, { user }) => {
         console.error("Error adding product to cart:", error.message);
         return new Error("Failed to add product to cart");
     }
-};
+}
 
 const increaseQty = async (_, { input }, { user }) => {
     try {

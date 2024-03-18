@@ -30,7 +30,7 @@ const packageData = [
   },
 ];
 
-const TableThree = () => {
+const AllProducts = () => {
 
   const router = useRouter();
 
@@ -183,4 +183,4 @@ const TableThree = () => {
   );
 };
 
-export default TableThree;
+export default AllProducts;

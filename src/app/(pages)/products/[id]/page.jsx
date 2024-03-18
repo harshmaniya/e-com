@@ -34,13 +34,9 @@ const Product = ({ params }) => {
         setQty(prev => prev > 1 ? prev - 1 : 1);
     }
 
-    
-
     // const handleColor = () => {
     //     setColor()
     // }
-
-    
 
     const { data, loading } = useQuery(GET_PRODUCT, {
         variables: {
