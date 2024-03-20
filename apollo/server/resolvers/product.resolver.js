@@ -67,7 +67,7 @@ const getAllProducts = async () => {
 };
 
 // done
-const getProduct = combineResolvers(isAuthenticatedAdmin, async (_, { _id }) => {
+const getProduct = async (_, { _id }) => {
     try {
         // Fetch product by ID and populate related fields
         const product = await Product.findById(_id)
@@ -84,7 +84,7 @@ const getProduct = combineResolvers(isAuthenticatedAdmin, async (_, { _id }) => 
         console.error("Error fetching product:", error.message);
         return new Error("Failed to fetch product");
     }
-});
+};
 
 // done
 const updateProduct = combineResolvers(isAuthenticatedAdmin, async (_, { input }) => {

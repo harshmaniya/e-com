@@ -3,10 +3,15 @@ import { Role, User } from "@/lib/models";
 // done
 const login = async (_, { input }) => {
     const { email, password } = input;
+    console.log("🚀 ~ login ~ input:", input)
+    
     try {
         const userData = await User.findOne({ email });
+        console.log("🚀 ~ login ~ userData:", userData)
         if (!userData) return new Error("Wrong email or password");
         const isMatch = await userData.isPasswordCorrect(password);
+        console.log("🚀 ~ login ~ isMatch:", isMatch)
+        
         if (!isMatch) return new Error("Wrong email or password");
 
         const accessToken = await userData.generateAccessToken();

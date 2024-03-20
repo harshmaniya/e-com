@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react'
-import SideBar from '@/src/components/SideBar'
+import SideBar from '@/src/components/Client/SideBar'
 import { GET_ALL_PRODUCTS } from '@/apollo/client/query';
-import ProductCard from '@/src/components/ProductCard';
+import ProductCard from '@/src/components/Client/ProductCard';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 

@@ -31,7 +31,8 @@
     "react-apexcharts": "^1.4.1",
     "react-color": "^2.19.3",
     "react-dom": "^18",
-    "react-hook-form": "^7.51.1"
+    "react-hook-form": "^7.51.1",
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",

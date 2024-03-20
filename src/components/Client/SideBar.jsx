@@ -2,10 +2,10 @@
 
 import { useQuery } from '@apollo/client';
 import React, { useEffect, useState, useCallback } from 'react';
-import { GET_ALL_CATEGORY, GET_ALL_BRANDS, GET_ALL_COLORS } from '@/apollo/client/query';
+import { GET_ALL_CATEGORY, GET_ALL_BRANDS, GET_ALL_COLORS, GET_ALL_CATEGORIES } from '@/apollo/client/query';
 
 const SideBar = () => {
-    const { data: categoryData } = useQuery(GET_ALL_CATEGORY);
+    const { data: categoryData } = useQuery(GET_ALL_CATEGORIES);
     const { data: brandData } = useQuery(GET_ALL_BRANDS);
     const { data: colorsData } = useQuery(GET_ALL_COLORS);
 

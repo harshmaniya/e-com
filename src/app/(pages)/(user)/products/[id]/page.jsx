@@ -1,30 +1,26 @@
 'use client';
 
 import Image from 'next/image';
+import { toast } from 'react-toastify'
 import React, { useEffect, useState } from 'react';
-import { GET_PRODUCT } from '@/apollo/client/query';
-import { useQuery } from '@apollo/client';
-import Button from '@/src/components/Button';
+import { GET_PRODUCT, ADD_TO_CART } from '@/apollo/client/query';
+import { useMutation, useQuery } from '@apollo/client';
+import Button from '@/src/components/Client/Button';
 import { useRouter } from 'next/navigation';
 
 const Product = ({ params }) => {
 
-    console.log("params----- :", params.id);
     const router = useRouter()
 
-    const qtyData = JSON.parse(localStorage.getItem('cartData')) || []
-    let qtyItemIndex
+    const [color, setColor] = useState('');
+    const [qty, setQty] = useState(1);
 
-
-    if (qtyData.length > 0) {
-        qtyItemIndex = qtyData.findIndex(
-            (item) => item.id === params.id
-        )
-    }
-
-    const [qty, setQty] = useState(
-        qtyItemIndex !== undefined && qtyItemIndex !== -1 ? qtyData[qtyItemIndex].qty : 1
-    )
+    const [AddToCart] = useMutation(ADD_TO_CART)
+    const { data, loading } = useQuery(GET_PRODUCT, {
+        variables: {
+            id: params.id
+        }
+    });
 
     const handleIncreaseQty = () => {
         setQty(prev => prev + 1);
@@ -34,62 +30,37 @@ const Product = ({ params }) => {
         setQty(prev => prev > 1 ? prev - 1 : 1);
     }
 
-    // const handleColor = () => {
-    //     setColor()
-    // }
-
-    const { data, loading } = useQuery(GET_PRODUCT, {
-        variables: {
-            id: params.id
-        }
-    });
-
-    const [color, setColor] = useState({});
-    console.log("🚀 ~ Product ~ color:", color)
-
     const addToCart = () => {
-        const existingData = localStorage.getItem('cartData');
 
-        const newItem = {
-            id: params.id,
-            name: data.getProduct.name,
-            color,
-            image: data.getProduct.images[0],
-            price: data.getProduct.price,
-            qty,
-        };
+        console.log("🚀 ~ addToCart ~ addToCart btn clicked")
 
-        if (existingData) {
-            const parsedData = JSON.parse(existingData);
 
-            const existingItemIndex = parsedData.findIndex(
-                (item) => item.id === newItem.id && item.color._id === newItem.color._id
-            );
-
-            if (existingItemIndex !== -1) {
-                parsedData[existingItemIndex].qty = newItem.qty;
-            } else {
-                parsedData.push(newItem);
+        AddToCart({
+            variables: {
+                input: {
+                    pid: data.getProduct?._id,
+                    color,
+                    qty
+                }
             }
-
-            localStorage.setItem('cartData', JSON.stringify(parsedData));
-        } else {
-            const initialData = [newItem];
-            localStorage.setItem('cartData', JSON.stringify(initialData));
-        }
-
-        router.push('/cart')
+        }).then((res) => {
+            console.log("🚀 ~ addToCart ~ res:", res)
+            toast.success(res.data.addToCart)
+            router.push('/cart')
+        }).catch((err) => {
+            toast.error(err.message)
+            console.log("🚀 ~ addToCart ~ res:", err.message)
+        })
     };
 
     const [heroImg, setHeroImg] = useState(null);
 
     useEffect(() => {
         if (data && data.getProduct && data.getProduct.images && data.getProduct.images.length > 0) {
-            setColor(data.getProduct.colors[0])
+            setColor(data.getProduct.colors[0]?._id)
             setHeroImg(data.getProduct.images[0])
         }
     }, [data]);
-
 
     return (
         <>
@@ -149,7 +120,7 @@ const Product = ({ params }) => {
                                 <h3 className='text-lg font-bold'>Colors :</h3>
                                 {data?.getProduct?.colors?.map((itemColor) => (
                                     <div
-                                        onClick={()=>setColor(itemColor)}
+                                        onClick={() => setColor(itemColor._id)}
                                         key={itemColor._id}
                                         style={{ width: '20px', height: '20px', backgroundColor: itemColor.hexCode, borderRadius: '50%', padding: '10px' }}>
                                     </div>

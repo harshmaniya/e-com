@@ -1,17 +1,22 @@
 'use client'
 
-import Button from '@/src/components/Button';
+import React, { useEffect, useState } from 'react';
+import Button from '@/src/components/Client/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { GET_CART } from '@/apollo/client/query';
+import { useQuery } from '@apollo/client';
+
 
 const Cart = () => {
-    const [qty, setQty] = useState()
 
     const router = useRouter()
 
-    const [cartData, setCartData] = useState([])
+    const [qty, setQty] = useState()
     const [total, setTotal] = useState(0)
+
+    const { data: cartData, loading, error } = useQuery(GET_CART)
+    console.log("🚀 ~ Cart ~ cartData:", cartData)
 
     const handleRemoveItem = (id, colorID) => {
         console.log("🚀 ~ handleRemoveItem ~ colorID:", colorID)
@@ -59,17 +64,6 @@ const Cart = () => {
         setCartData([])
     }
 
-
-    useEffect(() => {
-        const tempData = JSON.parse(localStorage.getItem('cartData')) || []
-        let tempTotal = 0;
-        tempData.map((item) => {
-            tempTotal += item.price * item.qty
-        })
-        setTotal(tempTotal)
-        setCartData(tempData)
-    }, [qty])
-
     return (
         <div className="container mx-auto my-8 p-4">
             <h2 className="text-3xl font-bold mb-6">Shopping Cart</h2>
@@ -87,15 +81,15 @@ const Cart = () => {
                     <tbody>
                         {
                             cartData ?
-                                cartData.map((item) => (
+                                cartData.getCart.products.map((item) => (
 
                                     <tr className="hover:bg-gray-100 border-b border-gray-600 transition duration-300 text-center">
                                         <td className="py-4 px-6 flex items-center justify-center">
                                             <span className='flex justify-start'>
-                                                <Image src={item.image} alt='' width={100} height={100} />
+                                                <Image src={item.pid.images[0]} alt='' width={100} height={100} />
                                             </span>
                                             <span className='flex flex-col pl-4 text-left'>
-                                                <span className='font-bold'>{item.name}</span>
+                                                <span className='font-bold'>{item.pid.name}</span>
                                                 <span className='flex items-center'>
                                                     Color:
                                                     <span style={{
@@ -109,17 +103,17 @@ const Cart = () => {
                                                 </span>
                                             </span>
                                         </td>
-                                        <td className="py-4 px-6">${item.price}</td>
+                                        <td className="py-4 px-6">${item.pid.price}</td>
 
                                         <td className="py-4 px-6 flex flex-row justify-center">
                                             <p className='flex font-bold text-4xl space-x-8 py-4'>
-                                                <button onClick={() => handleDecreaseQty(item.id)}>-</button>
+                                                <button onClick={() => handleDecreaseQty(item._id)}>-</button>
                                                 <span>{item.qty}</span>
-                                                <button onClick={() => handleIncreaseQty(item.id)}>+</button>
+                                                <button onClick={() => handleIncreaseQty(item._id)}>+</button>
                                             </p>
                                         </td>
 
-                                        <td className="py-4 px-6">{item.price * item.qty}</td>
+                                        <td className="py-4 px-6">{item.pid.price * item.qty}</td>
                                         <td className="py-4 px-6">
                                             <button onClick={() => handleRemoveItem(item.id, item.color._id)} className="text-red-500 hover:text-red-700">Remove</button>
                                         </td>
@@ -138,7 +132,9 @@ const Cart = () => {
 
                 <div className="mt-8 flex justify-end">
                     <div className="bg-gray-100 p-6 rounded-lg">
-                        <p className="text-xl font-semibold mb-4">Total: {total}</p>
+                        <p className="text-xl font-semibold mb-4">
+                            Total: {cartData ? cartData.getCart.total : <h1>loading...</h1>}
+                        </p>
                         <button className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700">
                             Checkout
                         </button>

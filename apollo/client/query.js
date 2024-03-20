@@ -82,6 +82,7 @@ query GetProduct($id: ID!) {
     }
     sku
     colors {
+      _id
       name
       hexCode
     }
