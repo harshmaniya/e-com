@@ -9,17 +9,17 @@ import Link from 'next/link';
 
 const products = () => {
 
-    const { data, loading, error } = useQuery(GET_ALL_PRODUCTS)
+    const { data } = useQuery(GET_ALL_PRODUCTS)
     console.log("🚀 ~ products ~ data:", data?.getAllProducts)
 
     return (
         <>
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-10 mt-10">
                 <SideBar />
                 <div className='flex gap-8'>
                     {data ?
-                        data?.getAllProducts?.map((pdata) => (
-                            <Link href={`/products/` + pdata?._id}>
+                        data?.getAllProducts?.map((pdata, index) => (
+                            <Link key={index} href={`/products/` + pdata?._id}>
                                 <ProductCard
                                     name={pdata?.name}
                                     img={pdata?.images[0]}

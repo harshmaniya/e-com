@@ -2,16 +2,20 @@
 
 import { useQuery } from '@apollo/client';
 import React, { useEffect, useState, useCallback } from 'react';
-import { GET_ALL_CATEGORY, GET_ALL_BRANDS, GET_ALL_COLORS, GET_ALL_CATEGORIES } from '@/apollo/client/query';
+import { GET_ALL_CATEGORIES, GET_ALL_BRANDS, GET_ALL_COLORS } from '@/apollo/client/query';
 
 const SideBar = () => {
-    const { data: categoryData } = useQuery(GET_ALL_CATEGORIES);
-    const { data: brandData } = useQuery(GET_ALL_BRANDS);
-    const { data: colorsData } = useQuery(GET_ALL_COLORS);
 
     const [selectedCategories, setSelectedCategories] = useState({});
     const [selectedBrand, setSelectedBrand] = useState({});
     const [selectedColors, setSelectedColors] = useState([]);
+
+    const { data: categoryData } = useQuery(GET_ALL_CATEGORIES);
+    console.log("🚀 ~ SideBar ~ categoryData:", categoryData)
+    const { data: brandData } = useQuery(GET_ALL_BRANDS);
+    console.log("🚀 ~ SideBar ~ brandData:", brandData)
+    const { data: colorsData } = useQuery(GET_ALL_COLORS);
+    console.log("🚀 ~ SideBar ~ colorsData:", colorsData)
 
     const [isFreeShippingSelected, setFreeShippingSelected] = useState(false);
 
@@ -47,18 +51,12 @@ const SideBar = () => {
         });
     };
 
-    const [colorsDataTemp, setColorsDataTemp] = useState({});
-    console.log("🚀 ~ SideBar ~ colorsDataTemp:", colorsDataTemp)
-
-    useEffect(() => {
-        if (colorsData) {
-            setColorsDataTemp(colorsData);
-        }
-    }, [colorsData]);
-
     return (
         <div>
-            <input type="text" className="border rounded py-2 px-3 bg-slate-300" />
+            <input
+                type="text"
+                placeholder='Search'
+                className="border rounded py-2 px-3" />
 
             {categoryData ? (
                 <>
@@ -84,8 +82,8 @@ const SideBar = () => {
             {brandData ? (
                 <>
                     <p className="text-xl font-bold mt-4">Brand</p>
-                    {brandData?.getAllBrands?.map((bdata) => (
-                        <div key={bdata.id}>
+                    {brandData?.getAllBrands?.map((bdata, index) => (
+                        <div key={index}>
                             <input
                                 type="checkbox"
                                 id={`brand-${bdata.id}`}
@@ -102,13 +100,11 @@ const SideBar = () => {
                 <h1>Loading brands...</h1>
             )}
 
-            {colorsDataTemp && colorsDataTemp.length ? (
-                <h1>Loading colors...</h1>
-            ) : (
+            {colorsData ? (
                 <>
                     <p className="text-xl font-bold mt-4">Colors</p>
                     <div className="flex gap-2">
-                        {colorsDataTemp?.getAllColors?.map((color, index) => (
+                        {colorsData?.getAllColors?.map((color, index) => (
                             <div
                                 key={index}
                                 onClick={() => handleColor(index)}
@@ -132,7 +128,8 @@ const SideBar = () => {
                         ))}
                     </div>
                 </>
-            )}
+            )
+                : <h1>loading...</h1>}
 
             {/* <p className="text-xl font-bold mt-4">Free Shipping</p> */}
             <div>
