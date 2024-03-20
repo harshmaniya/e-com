@@ -9,6 +9,7 @@ const Cart = gql`
   }
 
   type CartProduct {
+    _id: ID!
     pid: Product
     qty: Int!
     color: Color

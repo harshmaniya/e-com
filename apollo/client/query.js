@@ -200,6 +200,7 @@ query GetCart {
   getCart {
     _id
     products {
+      _id
       pid {
         _id
         images

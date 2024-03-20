@@ -70,14 +70,15 @@ const decreaseQty = combineResolvers(isAuthenticatedUser, async (_, args, { user
                 "products._id": itemId
             }
         )
+        console.log("🚀 ~ decreaseQty dfbsdfbfgdb ~ cart:", cart)
 
-        const index = usersCart.products.findIndex(product => product._id.toString() === itemId.toString());
+        const index = cart.products.findIndex(product => product._id.toString() === itemId.toString());
         if (index !== -1 && cart.products[index].qty >= 2) {
             cart.products[index].qty -= 1;
-            await usersCart.save();
+            await cart.save();
             return "product quantity decreased successfully";
         } else {
-            return "product quantity cannot be decreased";
+            return new Error("product quantity cannot be decreased");
         }
     } catch (error) {
         console.error("Error decreased product quantity:", error.message);

@@ -1,67 +1,71 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
 import Button from '@/src/components/Client/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { GET_CART } from '@/apollo/client/query';
-import { useQuery } from '@apollo/client';
+import { GET_CART, INCREASE_QTY, DECREASE_QTY, REMOVE_FROM_CART, CLEAR_CART } from '@/apollo/client/query';
+import { useMutation, useQuery } from '@apollo/client';
+import { toast } from 'react-toastify';
 
 
 const Cart = () => {
 
     const router = useRouter()
 
-    const [qty, setQty] = useState()
-    const [total, setTotal] = useState(0)
-
     const { data: cartData, loading, error } = useQuery(GET_CART)
-    console.log("🚀 ~ Cart ~ cartData:", cartData)
+    const [IncreaseQty] = useMutation(INCREASE_QTY)
+    const [DecreaseQty] = useMutation(DECREASE_QTY)
+    const [RemoveFromCart] = useMutation(REMOVE_FROM_CART)
+    const [ClearCart] = useMutation(CLEAR_CART)
 
-    const handleRemoveItem = (id, colorID) => {
-        console.log("🚀 ~ handleRemoveItem ~ colorID:", colorID)
-        console.log("🚀 ~ handleRemoveItem ~ id:", id)
+    const handleRemoveItem = (id) => {
         if (id) {
-            const itemData = cartData.filter(
-                (item) => item.id !== id || item.color._id !== colorID
-            )
-            localStorage.setItem('cartData', JSON.stringify(itemData))
-            setCartData(itemData)
-            console.log("🚀 ~ handleRemoveItem ~ itemData:", itemData)
+            RemoveFromCart({
+                variables: {
+                    id
+                }
+            }).then((res) => {
+                toast.success(res.data.removeFromCart)
+            }).catch((err) => {
+                toast.error(err.message)
+            })
         }
     }
 
     const handleIncreaseQty = (id) => {
         if (id) {
-            const itemIndex = cartData.findIndex(
-                (item) => item.id === id
-            )
-
-            const tempCart = JSON.parse(localStorage.getItem('cartData')) || []
-            setQty(tempCart[itemIndex].qty += 1)
-            console.log("🚀 ~ handleIncreaseQty ~ tempCart:", tempCart)
-
-            localStorage.setItem('cartData', JSON.stringify(tempCart))
-            setCartData(tempCart)
+            IncreaseQty({
+                variables: {
+                    id
+                }
+            }).then((res) => {
+                toast.success(res.data.increaseQty)
+            }).catch((err) => {
+                toast.error(err.message)
+            })
         }
     }
 
     const handleDecreaseQty = (id) => {
         if (id) {
-            const itemIndex = cartData.findIndex(
-                (item) => item.id === id
-            )
-
-            const tempCart = JSON.parse(localStorage.getItem('cartData')) || []
-            setQty(tempCart[itemIndex].qty = tempCart[itemIndex].qty > 1 ? tempCart[itemIndex].qty - 1 : 1)
-            localStorage.setItem('cartData', JSON.stringify(tempCart))
-            setCartData(tempCart)
+            DecreaseQty({
+                variables: {
+                    id
+                }
+            }).then((res) => {
+                toast.success(res.data.decreaseQty)
+            }).catch((err) => {
+                toast.error(err.message)
+            })
         }
     }
 
     const handleClearCart = () => {
-        localStorage.clear('cartData')
-        setCartData([])
+        ClearCart().then((res) => {
+            toast.success(res.data.clearCart)
+        }).catch((err) => {
+            toast.error(err.message)
+        })
     }
 
     return (
@@ -115,7 +119,7 @@ const Cart = () => {
 
                                         <td className="py-4 px-6">{item.pid.price * item.qty}</td>
                                         <td className="py-4 px-6">
-                                            <button onClick={() => handleRemoveItem(item.id, item.color._id)} className="text-red-500 hover:text-red-700">Remove</button>
+                                            <button onClick={() => handleRemoveItem(item._id)} className="text-red-500 hover:text-red-700">Remove</button>
                                         </td>
                                     </tr>
                                 ))
