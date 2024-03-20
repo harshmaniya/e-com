@@ -31,12 +31,23 @@ const User = gql`
     address: String   
   }
 
+  input login{
+    email: String!
+    password: String!
+  }
+
+  type loginResult{
+    email: String
+    accessToken: String
+  }
+
   type Query {
     getUsers: [User!]!
-    getUserById(_id: ID!): User
+    getUserProfile: User
   }
 
   type Mutation {
+    login(input: login!): loginResult
     createUser(input: CreateUserInput!): String
     updateUser(input: UpdateUserInput!): User
     deleteUser(_id: ID!): User

@@ -20,20 +20,15 @@ const Cart = gql`
     color: ID!
   }
 
-  input updateQty {
-    pid: ID!
-    color: ID!
-  }
-
   type Query {
     getCart: Cart
   }
 
   type Mutation {
-    addToCart(input: [CartProductInput]!): Cart 
-    increaseQty(input: updateQty): String
-    decreaseQty(input: updateQty!): String
-    removeFromCart(userId: ID!, productId: ID!): Cart
+    addToCart(input: CartProductInput!): String
+    increaseQty(_id: ID!): String
+    decreaseQty(_id: ID!): String
+    removeFromCart(_id: ID!): String
     clearCart: String
   }
 

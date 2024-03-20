@@ -1,7 +1,9 @@
 import { Brand, Category, Color, Product } from "@/lib/models";
+import { combineResolvers } from "graphql-resolvers";
+import { isAuthenticatedAdmin } from '@/apollo/server/utils/middleware';
 
 // done
-const addProduct = async (_, { input }) => {
+const addProduct = combineResolvers(isAuthenticatedAdmin, async (_, { input }) => {
     try {
         const { sku } = input;
 
@@ -40,7 +42,7 @@ const addProduct = async (_, { input }) => {
         console.error("Error adding product:", error);
         return new Error("Failed to add product");
     }
-};
+});
 
 // done
 const getAllProducts = async () => {
@@ -65,7 +67,7 @@ const getAllProducts = async () => {
 };
 
 // done
-const getProduct = async (_, { _id }) => {
+const getProduct = combineResolvers(isAuthenticatedAdmin, async (_, { _id }) => {
     try {
         // Fetch product by ID and populate related fields
         const product = await Product.findById(_id)
@@ -82,11 +84,10 @@ const getProduct = async (_, { _id }) => {
         console.error("Error fetching product:", error.message);
         return new Error("Failed to fetch product");
     }
-};
-
+});
 
 // done
-const updateProduct = async (_, { input }) => {
+const updateProduct = combineResolvers(isAuthenticatedAdmin, async (_, { input }) => {
     try {
         const { _id, ...rest } = input;
 
@@ -137,10 +138,10 @@ const updateProduct = async (_, { input }) => {
         console.error("Error updating product:", error);
         return new Error("Failed to update product");
     }
-};
+});
 
 // done
-const deleteProduct = async (_, { _id }) => {
+const deleteProduct = combineResolvers(isAuthenticatedAdmin, async (_, { _id }) => {
     try {
         // Delete product
         const deletedProduct = await Product.findByIdAndDelete(_id);
@@ -154,7 +155,7 @@ const deleteProduct = async (_, { _id }) => {
         console.error("Error deleting product:", error);
         return new Error("Failed to delete product");
     }
-};
+});
 
 export const productResolver = {
     Query: {

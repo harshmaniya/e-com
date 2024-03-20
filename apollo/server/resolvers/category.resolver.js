@@ -1,8 +1,10 @@
 import { Category, Product } from "@/lib/models";
+import { combineResolvers } from "graphql-resolvers";
+import { isAuthenticatedAdmin } from '@/apollo/server/utils/middleware';
 
 
 // done
-const addCategory = async (_, { name }) => {
+const addCategory = combineResolvers(isAuthenticatedAdmin, async (_, { name }) => {
     try {
         // Data validation
         if (!name) {
@@ -24,10 +26,10 @@ const addCategory = async (_, { name }) => {
         console.error("Error adding category:", error);
         return new Error("Failed to add category");
     }
-};
+});
 
 // done
-const getAllCategories = async () => {
+const getAllCategories = combineResolvers(isAuthenticatedAdmin, async () => {
     try {
         // Fetch all categories
         const allCategories = await Category.find();
@@ -38,10 +40,10 @@ const getAllCategories = async () => {
         console.error("Error fetching categories:", error);
         return new Error("Failed to fetch categories");
     }
-};
+});
 
 // done
-const updateCategory = async (_, { _id, name }) => {
+const updateCategory = combineResolvers(isAuthenticatedAdmin, async (_, { _id, name }) => {
     try {
         // Data validation
         if (!name) {
@@ -60,10 +62,10 @@ const updateCategory = async (_, { _id, name }) => {
         console.error("Error updating category:", error);
         return new Error("Failed to update category");
     }
-};
+});
 
 // done
-const deleteCategory = async (_, { _id }) => {
+const deleteCategory = combineResolvers(isAuthenticatedAdmin, async (_, { _id }) => {
     try {
         const isAssigned = await Product.findOne({ category: _id });
         if (isAssigned) return new Error("this category is assigned to products");
@@ -78,7 +80,7 @@ const deleteCategory = async (_, { _id }) => {
         console.error("Error deleting category:", error);
         return new Error("Failed to delete category");
     }
-};
+});
 
 export const categoryResolver = {
     Query: {

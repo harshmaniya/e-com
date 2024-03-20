@@ -3,7 +3,7 @@ import { gql } from 'apollo-server';
 const Wishlist = gql`
   type Wishlist {
     _id: ID!
-    products: [Product!]!
+    products: [Product!]
     user: User!
   }
 
@@ -12,8 +12,8 @@ const Wishlist = gql`
   }
 
   type Mutation {
-    addToWishlist(userId: ID!, productId: ID!): String
-    removeFromWishlist(userId: ID!, productId: ID!): String
+    addToWishlist(productId: ID!): String
+    removeFromWishlist(productId: ID!): String
   }
 `;
 

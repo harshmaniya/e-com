@@ -36,11 +36,8 @@ enum PaymentStatus {
   FAILED
 }
 
-input OrderInput {
-  products: [ProductOrderInput!]!
+input OrderInput { 
   shipping_address: String!
-  payment_method: String!
-  total: Float!
 }
 
 input ProductOrderInput {
@@ -50,15 +47,16 @@ input ProductOrderInput {
 }
 
 type Query {
-  getOrderById(orderId: ID!): Order
+  getOrder(orderId: ID!): Order
   getAllOrders: [Order!]!
 }
 
 type Mutation {
-  createOrder(input: OrderInput!): Order
+  createOrder(input: OrderInput!): String
   updateOrderStatus(orderId: ID!, newStatus: OrderStatus!): Order
   updateOrderPaymentStatus(orderId: ID!, newPaymentStatus: PaymentStatus!): Order
   deleteOrder(orderId: ID!): Order
 }
 `
+
 export default Order

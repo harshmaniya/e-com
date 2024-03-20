@@ -1,5 +1,6 @@
 import { Color } from "@/lib/models";
-import { rest } from "lodash";
+import { combineResolvers } from "graphql-resolvers";
+import { isAuthenticatedAdmin } from '@/apollo/server/utils/middleware';
 
 // done
 const addColor = async (_, { input }) => {
@@ -44,7 +45,7 @@ const getAllColors = async () => {
 };
 
 // done
-const updateColor = async (_, { input }) => {
+const updateColor = combineResolvers(isAuthenticatedAdmin, async (_, { input }) => {
   try {
     const { _id, ...rest } = input;
 
@@ -65,10 +66,10 @@ const updateColor = async (_, { input }) => {
     console.error("Error updating color:", error.message);
     return new Error("Failed to update color");
   }
-};
+});
 
 // done
-const deleteColor = async (_, { _id }) => {
+const deleteColor = combineResolvers(isAuthenticatedAdmin, async (_, { _id }) => {
   try {
     // Delete color
     const deletedColor = await Color.findByIdAndDelete(_id);
@@ -82,7 +83,7 @@ const deleteColor = async (_, { _id }) => {
     console.error("Error deleting color:", error.message);
     return new Error("Failed to delete color");
   }
-};
+});
 
 export const colorResolver = {
   Query: {

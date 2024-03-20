@@ -1,7 +1,9 @@
 import { Brand, Product } from "@/lib/models";
+import { combineResolvers } from "graphql-resolvers";
+import { isAuthenticatedAdmin } from '@/apollo/server/utils/middleware';
 
 // done
-const addBrand = async (_, args) => {
+const addBrand = combineResolvers(isAuthenticatedAdmin, async (_, args) => {
     try {
         const { name } = args;
 
@@ -25,10 +27,10 @@ const addBrand = async (_, args) => {
         console.error("Error adding brand:", error);
         return new Error("Failed to add brand");
     }
-};
+});
 
 // done
-const getAllBrands = async () => {
+const getAllBrands = async (_, args) => {    
     try {
         const getAllBrands = await Brand.find()
         if (!getAllBrands) return new Error("not found brand!")
@@ -41,7 +43,7 @@ const getAllBrands = async () => {
 }
 
 // done
-const updateBrand = async (_, args) => {
+const updateBrand = combineResolvers(isAuthenticatedAdmin, async (_, args) => {
     try {
         const { _id, name } = args;
 
@@ -62,10 +64,10 @@ const updateBrand = async (_, args) => {
         console.error("Error updating brand:", error);
         return new Error("Failed to update brand");
     }
-};
+});
 
 // done
-const deleteBrand = async (_, { _id }) => {
+const deleteBrand = combineResolvers(isAuthenticatedAdmin, async (_, { _id }) => {
     try {
 
         const isAssigned = await Product.findOne({ brand: _id });
@@ -81,7 +83,7 @@ const deleteBrand = async (_, { _id }) => {
         console.error("Error deleting brand:", error);
         return new Error("Failed to delete brand");
     }
-};
+});
 
 export const brandResolver = {
     Query: {

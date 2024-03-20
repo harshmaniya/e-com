@@ -1,10 +1,10 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 
-const Select = ({ data, className, label, type, defaultValue, required, ...rest }) => {
+const Select = ({ selectData, className, label, defaultValue, required, ...rest }) => {
 
-    const [selectedOption, setSelectedOption] = useState({defaultValue})
+    const [selectedOption, setSelectedOption] = useState(defaultValue)
     const [isOptionSelected, setIsOptionSelected] = useState(false)
 
     const changeTextColor = () => {
@@ -13,10 +13,9 @@ const Select = ({ data, className, label, type, defaultValue, required, ...rest 
 
     return (
         <>
-            <div className="mb-4.5">
+            <div className={className}>
                 <label className="mb-2.5 block text-black dark:text-white">
-                    {" "}
-                    {label}{" "}
+                    {label} {required && <span className="text-meta-1">*</span>}
                 </label>
 
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
@@ -30,11 +29,14 @@ const Select = ({ data, className, label, type, defaultValue, required, ...rest 
                             }`}
                     >
                         <option value="" disabled className="text-body dark:text-bodydark">
-                            Select your brand
+                            {defaultValue}
                         </option>
-                        <option value={brand._id} className="text-body dark:text-bodydark">
-                            {brand.name}
-                        </option>
+
+                        {selectData?.map((data) => (
+                            <option value={data._id} className="text-body dark:text-bodydark">
+                                {data.name}
+                            </option>
+                        ))}
                     </select>
 
                     <span className="absolute right-4 top-1/2 z-30 -translate-y-1/2">
