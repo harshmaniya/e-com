@@ -6,7 +6,8 @@ import Order from "./order.type";
 import Product from "./product.type";
 import User from "./user.type";
 import Wishlist from "./wishlist.type";
+import Checkout from "./checkout.type"
 
-const typeDefs = [Brand, Category, Color, Product, User, Cart, Order, Wishlist];
+const typeDefs = [Brand, Category, Color, Product, User, Cart, Order, Wishlist, Checkout];
 
 export default typeDefs;

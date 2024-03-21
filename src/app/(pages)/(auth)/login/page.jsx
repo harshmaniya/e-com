@@ -38,7 +38,7 @@ const Login = () => {
             toast.success("login successfully");
             router.push('/')
         }).catch((err) => {
-            toast.error(err.message)
+            toast.error(err.message);
         })
     };
     return (
@@ -71,7 +71,7 @@ const Login = () => {
                             type="submit"
                             className="w-full mt-5 bg-black text-white py-2 px-4 rounded-md hover:bg-[#ab7a5f] focus:outline-none focus:ring-2 focus:ring-[#ab7a5f] transition-all focus:ring-opacity-50"
                         >
-                            Register
+                            Login
                         </button>
                     </div>
                 </form>

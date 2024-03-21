@@ -3,20 +3,25 @@
 import Button from '@/src/components/Client/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { GET_CART, INCREASE_QTY, DECREASE_QTY, REMOVE_FROM_CART, CLEAR_CART } from '@/apollo/client/query';
+import { GET_CART, INCREASE_QTY, DECREASE_QTY, REMOVE_FROM_CART, CLEAR_CART, CREATE_ORDER, CREATE_CHECKOUT_SESSION } from '@/apollo/client/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
+import { redirectToCheckout } from '@/src/app/api/stripe';
 
 
 const Cart = () => {
 
     const router = useRouter()
 
-    const { data: cartData, loading, error } = useQuery(GET_CART)
+    const { data: cartData, loading, error, refetch: refetchCart } = useQuery(GET_CART)
     const [IncreaseQty] = useMutation(INCREASE_QTY)
     const [DecreaseQty] = useMutation(DECREASE_QTY)
     const [RemoveFromCart] = useMutation(REMOVE_FROM_CART)
     const [ClearCart] = useMutation(CLEAR_CART)
+
+    // const [CreateOrder] = useMutation(CREATE_ORDER)
+    const [CreateCheckoutSession] = useMutation(CREATE_CHECKOUT_SESSION)
 
     const handleRemoveItem = (id) => {
         if (id) {
@@ -26,6 +31,7 @@ const Cart = () => {
                 }
             }).then((res) => {
                 toast.success(res.data.removeFromCart)
+                refetchCart()
             }).catch((err) => {
                 toast.error(err.message)
             })
@@ -40,6 +46,7 @@ const Cart = () => {
                 }
             }).then((res) => {
                 toast.success(res.data.increaseQty)
+                refetchCart()
             }).catch((err) => {
                 toast.error(err.message)
             })
@@ -67,6 +74,27 @@ const Cart = () => {
             toast.error(err.message)
         })
     }
+
+    const handlePlaceOrder = async () => {
+
+        const createSession = await CreateCheckoutSession()
+        console.log("🚀 ~ handlePlaceOrder ~ createSession:", createSession)
+        const sessionId = createSession.data.createCheckoutSession.sessionId      
+        redirectToCheckout(sessionId)  
+
+        // CreateOrder({
+        //     variables: {
+        //         input: {
+        //             products: cartData.getCart.products
+        //         }
+        //     }
+        // })
+        // router.push('/checkout')
+    }
+
+    useEffect(() => {
+        refetchCart()
+    }, [])
 
     return (
         <>
@@ -135,16 +163,30 @@ const Cart = () => {
                         <Button className={"mt-10 bg-black"} onClick={() => handleClearCart()} title={"Clear Shopping Cart"} />
                     </div>
 
-                    <div className="mt-8 flex justify-end">
-                        <div className="bg-gray-100 p-6 rounded-lg">
-                            <p className="text-xl font-semibold mb-4">
-                                Total: {cartData ? cartData.getCart.total : <h1>loading...</h1>}
-                            </p>
-                            <button className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700">
-                                Checkout
-                            </button>
+                    <div className='mt-10 mb-5 px-5 ml-auto w-[30%] border border-gray-200 text-center p-2'>
+                        <div className='border-b border-b-gray-200 pb-4'>
+                            <div className="flex text-start items-center py-2">
+                                <p className='text-base font-bold w-1/2  '>SUBTOTAL :</p>
+                                <p >{cartData ? `$ ${cartData.getCart.total}` : <h1>loading...</h1>}</p>
+                            </div>
+                            <div className="flex text-start items-center py-2">
+                                <p className='text-base font-bold w-1/2  '>SHIPPING CHARGE :</p>
+                                {/* <p >$ {shippingCharge}</p> */}
+                            </div>
                         </div>
+                        <div className="flex text-start items-center py-2">
+                            <p className='text-lg font-bold w-1/2  '>TOTAL AMOUNT :</p>
+                            <p >{cartData ? `$ ${cartData.getCart.total}` : <h1>loading...</h1>}</p>
+                        </div>
+
+
                     </div>
+                    <div className="w-[30%] mb-10 ml-auto mt-1">
+                        <button onClick={() => handlePlaceOrder()} className='w-full px-4 py-2 text-white bg-[#ab7a5f] rounded-sm'>
+                            Place Order
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </>

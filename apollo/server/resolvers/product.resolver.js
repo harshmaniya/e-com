@@ -45,9 +45,42 @@ const addProduct = combineResolvers(isAuthenticatedAdmin, async (_, { input }) =
 });
 
 // done
-const getAllProducts = async () => {
+const getAllProducts = async (_, args) => {
     try {
-        // Fetch all products and populate related fields
+        if (args.input) {
+            const { categories, brands, colors, search, freeShipping } = args.input
+            let query = {}
+
+            if (categories && categories.length > 0) {
+                query.category = { $in: categories }
+            }
+            if (brands && brands.length > 0) {
+                query.brand = { $in: brands }
+            }
+            if (colors && colors.length > 0) {
+                query.colors = { $in: colors }
+            }
+            if (search) {
+                query.name = { $regex: "^" + search, $options: "i" }
+            }
+            if (freeShipping) {
+                query.freeShipping = { $eq: freeShipping }
+            }
+            
+            console.log("querydsfgsdfg", query)
+
+            const allProducts = await Product.find(query)
+                .populate([
+                    { path: "brand" },
+                    { path: "category" },
+                    { path: "colors" }
+                ])
+
+            if (!allProducts) return new Error("Products not found");
+            console.log("Fetched products:", allProducts);
+            return allProducts;
+        }
+
         const allProducts = await Product.find()
             .populate([
                 { path: "brand" },

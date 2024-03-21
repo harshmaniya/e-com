@@ -1,14 +1,14 @@
 'use client'
 
 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 import Navbar from "@/src/components/Client/Navbar";
 import PathBar from "@/src/components/Client/PathBar";
 import { Inter } from "next/font/google";
 import "@/src/css/userStyle.css";
-import { ApolloProvider } from "@apollo/client";
-import client from "@/apollo/client/client";
+// import { ApolloProvider } from "@apollo/client";
+// import client from "@/apollo/client/client";
 import Footer from "@/src/components/Client/Footer";
 
 
@@ -24,13 +24,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ApolloProvider client={client}>          
+        {/* <ApolloProvider client={client}> */}
             <Navbar />
             <PathBar />
             {children}
-            <Footer />          
-          <ToastContainer />
-        </ApolloProvider>
+            <Footer />     
+          {/* <ToastContainer /> */}
+        {/* </ApolloProvider> */}
       </body>
     </html>
   );

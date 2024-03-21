@@ -29,7 +29,7 @@ const addCategory = combineResolvers(isAuthenticatedAdmin, async (_, { name }) =
 });
 
 // done
-const getAllCategories = combineResolvers(isAuthenticatedAdmin, async () => {
+const getAllCategories = async () => {
     try {
         // Fetch all categories
         const allCategories = await Category.find();
@@ -40,7 +40,7 @@ const getAllCategories = combineResolvers(isAuthenticatedAdmin, async () => {
         console.error("Error fetching categories:", error);
         return new Error("Failed to fetch categories");
     }
-});
+};
 
 // done
 const updateCategory = combineResolvers(isAuthenticatedAdmin, async (_, { _id, name }) => {

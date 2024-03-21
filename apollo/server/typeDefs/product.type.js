@@ -43,8 +43,16 @@ input UpdateProductInput {
     freeShipping: Boolean
 }
 
+input GetAllProductsInput {
+    categories: [ID]
+    brands: [ID]
+    colors: [ID]
+    search: String
+    freeShipping: Boolean
+}
+
 type Query {
-    getAllProducts: [Product]
+    getAllProducts(input: GetAllProductsInput): [Product]
     getProduct(_id: ID!): Product
 }
 

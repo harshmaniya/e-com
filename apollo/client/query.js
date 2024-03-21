@@ -92,8 +92,8 @@ query GetProduct($id: ID!) {
 }`
 
 export const GET_ALL_PRODUCTS = gql`
-query GetAllProducts {
-  getAllProducts {
+query GetAllProducts($input: GetAllProductsInput) {
+  getAllProducts(input: $input) {
     _id
     name
     price
@@ -165,8 +165,7 @@ query GetAllColors {
     name
     hexCode
   }
-}
-`
+}`
 
 // CART //
 
@@ -341,5 +340,14 @@ query GetUserProfile {
     password
     phone
     address
+  }
+}`
+
+// checkout //
+
+export const CREATE_CHECKOUT_SESSION = gql`
+mutation CreateCheckoutSession {
+  createCheckoutSession {
+    sessionId
   }
 }`

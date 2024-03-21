@@ -6,9 +6,10 @@ import { userResolver } from "./user.resolver";
 import { cartResolver } from "./cart.resolver";
 import { wishlistResolver } from "./wishlist.resolver";
 import { orderResolvers } from "./order.resolver";
+import { checkoutResolvers } from "./checkout.resolver";
 
 import { merge } from "lodash";
 
-const resolvers = merge(productResolver, brandResolver, categoryResolver, colorResolver, userResolver, cartResolver, wishlistResolver, orderResolvers)
+const resolvers = merge(productResolver, brandResolver, categoryResolver, colorResolver, userResolver, cartResolver, wishlistResolver, orderResolvers, checkoutResolvers)
 
 export default resolvers
