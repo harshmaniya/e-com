@@ -1,35 +1,68 @@
-// pages/api/webhook.js
+import stripe from "stripe"
+import { headers } from "next/headers"
+import { NextResponse } from "next/server"
+import { Cart, Order } from "@/lib/models"
 
-// import { stripe } from '@/lib/stripe'; // Import the configured stripe instance
+export const POST = async (req) => {
 
-// const endpointSecret = "we_1OwkXcSF7Ev9e7hkydhLClPs";
+    const body = await req.text()
+    const sig = headers().get("stripe-signature")
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
 
+    let event
 
-export default function handler(req, res) {
-    if (req.method === 'POST') {
-        const event = req.body;
+    try {
+        event = stripe.webhooks.constructEvent(body, sig, endpointSecret)
+    } catch (err) {
+        return NextResponse.json({ message: `Webhook Error: ${(err).message}` })
+    }
 
+    try {
         // Handle the event
         switch (event.type) {
-            case 'payment_intent.succeeded':
-                const paymentIntent = event.data.object;
-                // Then define and call a method to handle the successful payment intent.
-                // handlePaymentIntentSucceeded(paymentIntent);
-                break;
-            case 'payment_method.attached':
-                const paymentMethod = event.data.object;
-                // Then define and call a method to handle the successful attachment of a PaymentMethod.
-                // handlePaymentMethodAttached(paymentMethod);
-                break;
-            // ... handle other event types
+            case "checkout.session.completed":
+                const session = event.data.object
+                const Address = session.customer_details.address
+                const addressString = `${Address.line1}, ${Address.line2}, ${Address.city}, ${Address.state}, ${Address.postal_code}, ${Address.country}`;
+                try {
+                    const userID = session.metadata.userId
+                    const cart = await Cart.findOne({ user: userID }).populate('products.pid')
+
+                    if (!cart) {
+                        throw new Error("Cart not found for the user.");
+                    }
+
+                    const newOrder = await Order.create({
+                        user: userID,
+                        products: cart.products,
+                        shipping_address: addressString,
+                        payment_method: session.payment_method_types[0],
+                        payment_status: session.payment_status,
+                        total: cart.total
+                    })
+
+                    if (newOrder) {
+                        await Cart.updateOne({ user: userID }, { $set: { products: [] } })
+                        return NextResponse.json({ message: "OK" })
+                    } else {
+                        return new Error("Failed to create order")
+                    }                
+
+                } catch (error) {
+                    console.error("Error creating order:", error.message);
+                    return NextResponse.json({ message: `Failed to create order: ${error.message}` });
+                }
+            case "checkout.session.async_payment_failed":
+                const session2 = event.data.object
+                break
             default:
-                console.log(`Unhandled event type ${event.type}`);
+                console.log("🚀 ~ POST ~ session type not match:")
+                break
         }
 
-        // Return a response to acknowledge receipt of the event
-        res.status(200).json({ received: true });
-    } else {
-        res.setHeader('Allow', ['POST']);
-        res.status(405).end('Method Not Allowed');
+    } catch (err) {
+        return NextResponse.json({ message: `Webhook handler failed. View logs. ${(err).message} ` })
     }
+
+    return new Response("", { status: 200 })
 }

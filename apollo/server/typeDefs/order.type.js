@@ -22,22 +22,23 @@ type ProductOrder {
   color: Color
 }
 
-enum OrderStatus {
-  PENDING
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELED
+enum OrderStatus {  
+  pending  
+  processing  
+  shipped  
+  delivered
+  canceled
 }
 
-enum PaymentStatus {
-  PAID
-  PENDING
-  FAILED
+enum PaymentStatus {  
+  paid
+  pending  
+  failed
 }
 
 input OrderInput { 
   shipping_address: String!
+  payment_status: PaymentStatus!
 }
 
 input ProductOrderInput {

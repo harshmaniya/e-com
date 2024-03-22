@@ -6,8 +6,7 @@ import { isAuthenticatedUser } from '@/apollo/server/utils/middleware';
 const addToCart = combineResolvers(isAuthenticatedUser, async (_, { input }, { user }) => {
     try {
         const { _id } = user;
-        const { pid, color, qty } = input;
-        console.log("🚀 ~ addToCart ~ _id:", _id);
+        const { pid, color, qty } = input;       
         const usersCart = await Cart.findOne({ user: _id });
 
         if (!usersCart) {
@@ -126,9 +125,7 @@ const getCart = combineResolvers(isAuthenticatedUser, async (_, args, { user }) 
         const cart = await Cart.findOne({ user: _id })
             .populate('products.pid')
             .populate('products.color')
-
-        
-        console.log("🚀 ~ getCart ~ cart:", cart)
+       
         return cart;
     } catch (error) {
         console.error("Error fetching cart:", error.message);

@@ -1,7 +1,8 @@
+'use client'
+
 import React from 'react';
 
-const Button = ({ title, className, ...rest }) => {
-    console.log('===button')
+const Button = ({ title, className, ...rest }) => {   
     return (
         <button
             {...rest}

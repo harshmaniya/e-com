@@ -5,7 +5,7 @@ import { Cart, Order } from "@/lib/models";
 // done
 const createOrder = combineResolvers(isAuthenticatedUser, async (_, { input }, { user }) => {
     try {
-        const { shipping_address } = input
+        const { shipping_address, payment_status } = input
         console.log("🚀 ~ createOrder ~ shipping_address:", shipping_address)
 
         const { _id } = user
@@ -17,7 +17,7 @@ const createOrder = combineResolvers(isAuthenticatedUser, async (_, { input }, {
             products: cart.products,
             shipping_address: shipping_address,
             payment_method: "COD",
-            payment_status: "PENDING",
+            payment_status,
             total: cart.total
         });
         if (!newOrder) return new Error("Failed to create order");

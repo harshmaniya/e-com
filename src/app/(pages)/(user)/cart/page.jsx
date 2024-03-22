@@ -79,8 +79,8 @@ const Cart = () => {
 
         const createSession = await CreateCheckoutSession()
         console.log("🚀 ~ handlePlaceOrder ~ createSession:", createSession)
-        const sessionId = createSession.data.createCheckoutSession.sessionId      
-        redirectToCheckout(sessionId)  
+        const sessionId = createSession.data.createCheckoutSession.sessionId
+        redirectToCheckout(sessionId)
 
         // CreateOrder({
         //     variables: {
@@ -113,47 +113,49 @@ const Cart = () => {
                         </thead>
                         <tbody>
                             {
-                                cartData ?
-                                    cartData.getCart.products.map((item) => (
+                                cartData &&
+                                cartData.getCart.products.map((item) => (
 
-                                        <tr className="hover:bg-gray-100 border-b border-gray-600 transition duration-300 text-center">
-                                            <td className="py-4 px-6 flex items-center justify-center">
-                                                <span className='flex justify-start'>
-                                                    <Image src={item.pid.images[0]} alt='' width={100} height={100} />
+                                    <tr className="hover:bg-gray-100 border-b border-gray-600 transition duration-300 text-center">
+                                        <td className="py-4 px-6 flex items-center justify-center">
+                                            <span className='flex justify-start'>
+                                                <Image src={item.pid.images[0]} alt='' width={100} height={100} />
+                                            </span>
+                                            <span className='flex flex-col pl-4 text-left'>
+                                                <span className='font-bold'>{item.pid.name}</span>
+                                                <span className='flex items-center'>
+                                                    Color:
+                                                    <span style={{
+                                                        marginLeft: '5px',
+                                                        width: '15px',
+                                                        height: '15px',
+                                                        backgroundColor: item.color.hexCode,
+                                                        borderRadius: '50%',
+                                                        display: 'inline-block',
+                                                    }}></span>
                                                 </span>
-                                                <span className='flex flex-col pl-4 text-left'>
-                                                    <span className='font-bold'>{item.pid.name}</span>
-                                                    <span className='flex items-center'>
-                                                        Color:
-                                                        <span style={{
-                                                            marginLeft: '5px',
-                                                            width: '15px',
-                                                            height: '15px',
-                                                            backgroundColor: item.color.hexCode,
-                                                            borderRadius: '50%',
-                                                            display: 'inline-block',
-                                                        }}></span>
-                                                    </span>
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-6">${item.pid.price}</td>
+                                            </span>
+                                        </td>
+                                        <td className="py-4 px-6">${item.pid.price}</td>
 
-                                            <td className="py-4 px-6 flex flex-row justify-center">
-                                                <p className='flex font-bold text-4xl space-x-8 py-4'>
-                                                    <button onClick={() => handleDecreaseQty(item._id)}>-</button>
-                                                    <span>{item.qty}</span>
-                                                    <button onClick={() => handleIncreaseQty(item._id)}>+</button>
-                                                </p>
-                                            </td>
+                                        <td className="py-4 px-6 flex flex-row justify-center">
+                                            <span className='flex font-bold text-4xl space-x-8 py-4'>
+                                                <button onClick={() => handleDecreaseQty(item._id)}>-</button>
+                                                <span>{item.qty}</span>
+                                                <button onClick={() => handleIncreaseQty(item._id)}>+</button>
+                                            </span>
+                                        </td>
 
-                                            <td className="py-4 px-6">{item.pid.price * item.qty}</td>
-                                            <td className="py-4 px-6">
-                                                <button onClick={() => handleRemoveItem(item._id)} className="text-red-500 hover:text-red-700">Remove</button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                    :
-                                    <h1>loading...</h1>
+                                        <td className="py-4 px-6">{item.pid.price * item.qty}</td>
+                                        <td className="py-4 px-6">
+                                            <button onClick={() => handleRemoveItem(item._id)} className="text-red-500 hover:text-red-700">Remove</button>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+
+                            {
+                                cartData && cartData.getCart.products.length === 0 && <p>No item in your cart</p>
                             }
                         </tbody>
                     </table>
@@ -167,16 +169,16 @@ const Cart = () => {
                         <div className='border-b border-b-gray-200 pb-4'>
                             <div className="flex text-start items-center py-2">
                                 <p className='text-base font-bold w-1/2  '>SUBTOTAL :</p>
-                                <p >{cartData ? `$ ${cartData.getCart.total}` : <h1>loading...</h1>}</p>
+                                <p >{cartData ? `$ ${cartData.getCart.total}` : <span>loading...</span>}</p>
                             </div>
                             <div className="flex text-start items-center py-2">
                                 <p className='text-base font-bold w-1/2  '>SHIPPING CHARGE :</p>
-                                {/* <p >$ {shippingCharge}</p> */}
+                                <p >Free</p>
                             </div>
                         </div>
                         <div className="flex text-start items-center py-2">
                             <p className='text-lg font-bold w-1/2  '>TOTAL AMOUNT :</p>
-                            <p >{cartData ? `$ ${cartData.getCart.total}` : <h1>loading...</h1>}</p>
+                            <div>{cartData ? `$ ${cartData.getCart.total}` : <span>loading...</span>}</div>
                         </div>
 
 
