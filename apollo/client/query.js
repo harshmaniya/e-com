@@ -257,7 +257,7 @@ query GetOrder($orderId: ID!) {
   }
 }`
 
-export const GET_ALL_ORDER = gql`
+export const GET_ALL_ORDERS = gql`
 query GetAllOrders {
   getAllOrders {
     _id
@@ -285,6 +285,8 @@ query GetAllOrders {
     updatedAt
   }
 }`
+
+
 
 
 // WISHLIST //

@@ -1,54 +1,65 @@
 'use client';
 
 import React, { useState } from 'react'
-import { useForm } from "react-hook-form"
+// import { useForm } from "react-hook-form"
 import Input from '../FormElements/input';
 import TextArea from '../FormElements/text-area';
 import Select from '../FormElements/select';
 import Image from 'next/image';
 import ColorPicker from '../FormElements/colorPicker';
 import Checkbox from '../FormElements/checkbox';
-
-
-const productData = [
-    {
-        "_id": "65eea58c3d992c8735a2dab6",
-        "name": "Suede Armchair",
-        "price": 159,
-        "description": "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz venmo everyday carry kitsch pitchfork chillwave iPhone taiyaki trust fund hashtag kinfolk microdosing gochujang live-edge",
-        "stock": 100,
-        "inStock": true,
-        "brand": "65eea2163d992c8735a2daa3",
-        "category": "65eea2d93d992c8735a2daa9",
-        "sku": "RecroK1VD8qVdMP5H",
-        "colors": [
-            "65eea3ed3d992c8735a2dab2"
-        ],
-        "images": [
-            "https://www.course-api.com/images/store/product-16.jpeg",
-            "https://www.course-api.com/images/store/extra-product-1.jpeg",
-            "https://www.course-api.com/images/store/extra-product-2.jpeg",
-            "https://www.course-api.com/images/store/extra-product-3.jpeg",
-            "https://www.course-api.com/images/store/extra-product-4.jpeg"
-        ],
-        "freeShipping": false,
-        "__v": 0
-    }
-]
+import { useMutation, useQuery } from '@apollo/client';
+// import { useRouter } from 'next/navigation';
+import { ADD_PRODUCT, GET_ALL_CATEGORIES, GET_ALL_BRANDS } from '@/apollo/client/query';
+import { toast } from 'react-toastify';
 
 const AddProduct = () => {
 
-    const [colors, setColors] = useState([]);
+    const [formData, setFormData] = useState({
+        name: "",
+        price: 0,
+        description: "",
+        stock: 0,
+        inStock: true,
+        brand: "",
+        category: "",
+        sku: "",
+        colors: [],
+        images: [],
+        freShipping: false
+    });
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }
-    } = useForm();
+    // const [colors, setColors] = useState([]);
 
-    const onSubmit = (data) => {
-        console.log("🚀 ~ onSubmit ~ data:", data)
-    }
+    const [AddProduct] = useMutation(ADD_PRODUCT)
+    const { data: categoryData, loading: categoryLoading, error: categoryError } = useQuery(GET_ALL_CATEGORIES);
+    const { data: brandData, loading: brandLoading, error: brandError } = useQuery(GET_ALL_BRANDS);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    console.log("🚀 ~ Product ~ formData:", formData)
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        AddProduct({
+            variables: {
+                input: {
+                    ...formData
+                }
+            }
+        }).then(async (res) => {
+            // localStorage.setItem("accessToken", res.data.login.accessToken)
+            toast.success("login successfully");
+            // router.push('/')
+        }).catch((err) => {
+            toast.error(err.message);
+        })
+    };
 
     return (
         <>
@@ -59,27 +70,25 @@ const AddProduct = () => {
                             Create New Product
                         </h3>
                     </div>
-                    <form onSubmit={handleSubmit(onSubmit)}  >
+                    <form onSubmit={handleSubmit}  >
                         <div className="p-6.5">
 
                             <Input
                                 className={"w-full mb-6"}
                                 label={"Product Name"}
                                 type={"text"}
+                                name={"name"}
                                 placeholder={"Enter product name"}
-                                required={true}
-                                {...register("name", { required: true })}
-                                errors={errors.name}
+                                onChange={handleInputChange}
                             />
 
                             <TextArea
                                 className={"w-full mb-6"}
                                 label={"Description"}
                                 type={"text"}
+                                name={"description"}
                                 placeholder={"Type product description"}
-                                required={true}
-                                {...register("description", { required: true })}
-                                errors={errors.name}
+                                onChange={handleInputChange}
                             />
 
                             <div className="flex">
@@ -88,20 +97,18 @@ const AddProduct = () => {
                                     className={"w-1/3 mb-6 mr-10"}
                                     label={"Price"}
                                     type={"number"}
+                                    name={"price"}
                                     placeholder={"Enter product price"}
-                                    required={true}
-                                    {...register("price", { required: true })}
-                                    errors={errors.price}
+                                    onChange={handleInputChange}
                                 />
 
                                 <Input
                                     className={"w-1/3 mb-6"}
                                     label={"Stock"}
                                     type={"number"}
+                                    name={"stock"}
                                     placeholder={"Enter available stock"}
-                                    required={true}
-                                    {...register("stock", { required: true })}
-                                    errors={errors.stock}
+                                    onChange={handleInputChange}
                                 />
 
                             </div>
@@ -111,21 +118,19 @@ const AddProduct = () => {
                                 <Select
                                     className={"w-1/3 mb-6 mr-10"}
                                     label={"Brand"}
+                                    name={"brand"}
                                     defaultValue={"Select Brand"}
-                                    selectData={productData}
-                                    required={true}
-                                    {...register("brand", { required: true })}
-                                    errors={errors.brand}
+                                    selectData={brandData?.getAllBrands}
+                                    onChange={handleInputChange}
                                 />
 
                                 <Select
                                     className={"w-1/3 mb-6"}
                                     label={"Category"}
+                                    name={"category"}
                                     defaultValue={"Select Category"}
-                                    selectData={productData}
-                                    required={true}
-                                    {...register("category", { required: true })}
-                                    errors={errors.category}
+                                    selectData={categoryData?.getAllCategories}
+                                    onChange={handleInputChange}
                                 />
 
                             </div>
@@ -209,7 +214,7 @@ const AddProduct = () => {
                                 </div>
                             </div>
 
-                            <ColorPicker colors={colors} setColors={setColors} />
+                            {/* <ColorPicker colors={colors} setColors={setColors} /> */}
 
                             <div className="flex items-center">
 
@@ -217,10 +222,10 @@ const AddProduct = () => {
                                     className={"w-1/3 mb-6 mr-10"}
                                     label={"SKU"}
                                     type={"text"}
+                                    name={"sku"}
                                     placeholder={"Enter sku"}
                                     required={true}
-                                    {...register("sku", { required: true })}
-                                    errors={errors.sku}
+                                    onChange={handleInputChange}
                                 />
 
                                 <Checkbox
@@ -241,4 +246,3 @@ const AddProduct = () => {
 }
 
 export default AddProduct
-

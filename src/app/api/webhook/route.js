@@ -46,7 +46,7 @@ export const POST = async (req) => {
                         return NextResponse.json({ message: "OK" })
                     } else {
                         return new Error("Failed to create order")
-                    }                
+                    }
 
                 } catch (error) {
                     console.error("Error creating order:", error.message);

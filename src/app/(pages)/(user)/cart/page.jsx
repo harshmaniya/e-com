@@ -100,96 +100,107 @@ const Cart = () => {
         <>
             <div className="container mx-auto my-8 p-4">
                 <h2 className="text-3xl font-bold mb-6">Shopping Cart</h2>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white border rounded-lg overflow-hidden">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="py-3 px-6 text-center">Item</th>
-                                <th className="py-3 px-6 text-center">Price</th>
-                                <th className="py-3 px-6 text-center">Quantity</th>
-                                <th className="py-3 px-6 text-center">Subtotal</th>
-                                <th className="py-3 px-6 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                cartData &&
-                                cartData.getCart.products.map((item) => (
 
-                                    <tr className="hover:bg-gray-100 border-b border-gray-600 transition duration-300 text-center">
-                                        <td className="py-4 px-6 flex items-center justify-center">
-                                            <span className='flex justify-start'>
-                                                <Image src={item.pid.images[0]} alt='' width={100} height={100} />
-                                            </span>
-                                            <span className='flex flex-col pl-4 text-left'>
-                                                <span className='font-bold'>{item.pid.name}</span>
-                                                <span className='flex items-center'>
-                                                    Color:
-                                                    <span style={{
-                                                        marginLeft: '5px',
-                                                        width: '15px',
-                                                        height: '15px',
-                                                        backgroundColor: item.color.hexCode,
-                                                        borderRadius: '50%',
-                                                        display: 'inline-block',
-                                                    }}></span>
+                {cartData?.getCart?.products?.length > 0 ? (
+
+
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full bg-white border rounded-lg overflow-hidden">
+                            <thead className="bg-gray-200">
+                                <tr>
+                                    <th className="py-3 px-6 text-center">Item</th>
+                                    <th className="py-3 px-6 text-center">Price</th>
+                                    <th className="py-3 px-6 text-center">Quantity</th>
+                                    <th className="py-3 px-6 text-center">Subtotal</th>
+                                    <th className="py-3 px-6 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    cartData &&
+                                    cartData?.getCart?.products?.map((item) => (
+
+                                        <tr className="hover:bg-gray-100 border-b border-gray-600 transition duration-300 text-center">
+                                            <td className="py-4 px-6 flex items-center justify-center">
+                                                <span className='flex justify-start'>
+                                                    <Image src={item.pid.images[0]} alt='' width={100} height={100} />
                                                 </span>
-                                            </span>
-                                        </td>
-                                        <td className="py-4 px-6">${item.pid.price}</td>
+                                                <span className='flex flex-col pl-4 text-left'>
+                                                    <span className='font-bold'>{item.pid.name}</span>
+                                                    <span className='flex items-center'>
+                                                        Color:
+                                                        <span style={{
+                                                            marginLeft: '5px',
+                                                            width: '15px',
+                                                            height: '15px',
+                                                            backgroundColor: item.color.hexCode,
+                                                            borderRadius: '50%',
+                                                            display: 'inline-block',
+                                                        }}></span>
+                                                    </span>
+                                                </span>
+                                            </td>
+                                            <td className="py-4 px-6">${item.pid.price}</td>
 
-                                        <td className="py-4 px-6 flex flex-row justify-center">
-                                            <span className='flex font-bold text-4xl space-x-8 py-4'>
-                                                <button onClick={() => handleDecreaseQty(item._id)}>-</button>
-                                                <span>{item.qty}</span>
-                                                <button onClick={() => handleIncreaseQty(item._id)}>+</button>
-                                            </span>
-                                        </td>
+                                            <td className="py-4 px-6 flex flex-row justify-center">
+                                                <span className='flex font-bold text-4xl space-x-8 py-4'>
+                                                    <button onClick={() => handleDecreaseQty(item._id)}>-</button>
+                                                    <span>{item.qty}</span>
+                                                    <button onClick={() => handleIncreaseQty(item._id)}>+</button>
+                                                </span>
+                                            </td>
 
-                                        <td className="py-4 px-6">{item.pid.price * item.qty}</td>
-                                        <td className="py-4 px-6">
-                                            <button onClick={() => handleRemoveItem(item._id)} className="text-red-500 hover:text-red-700">Remove</button>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
+                                            <td className="py-4 px-6">{item.pid.price * item.qty}</td>
+                                            <td className="py-4 px-6">
+                                                <button onClick={() => handleRemoveItem(item._id)} className="text-red-500 hover:text-red-700">Remove</button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
 
-                            {
-                                cartData && cartData.getCart.products.length === 0 && <p>No item in your cart</p>
-                            }
-                        </tbody>
-                    </table>
+                                {
+                                    cartData && cartData?.getCart?.products?.length === 0 && <p>No item in your cart</p>
+                                }
+                            </tbody>
+                        </table>
 
-                    <div className='flex justify-between px-4'>
-                        <Button className={"mt-10"} onClick={() => router.push('/products')} title={"Continue Shopping"} />
-                        <Button className={"mt-10 bg-black"} onClick={() => handleClearCart()} title={"Clear Shopping Cart"} />
-                    </div>
-
-                    <div className='mt-10 mb-5 px-5 ml-auto w-[30%] border border-gray-200 text-center p-2'>
-                        <div className='border-b border-b-gray-200 pb-4'>
-                            <div className="flex text-start items-center py-2">
-                                <p className='text-base font-bold w-1/2  '>SUBTOTAL :</p>
-                                <p >{cartData ? `$ ${cartData.getCart.total}` : <span>loading...</span>}</p>
-                            </div>
-                            <div className="flex text-start items-center py-2">
-                                <p className='text-base font-bold w-1/2  '>SHIPPING CHARGE :</p>
-                                <p >Free</p>
-                            </div>
-                        </div>
-                        <div className="flex text-start items-center py-2">
-                            <p className='text-lg font-bold w-1/2  '>TOTAL AMOUNT :</p>
-                            <div>{cartData ? `$ ${cartData.getCart.total}` : <span>loading...</span>}</div>
+                        <div className='flex justify-between px-4'>
+                            <Button className={"mt-10"} onClick={() => router.push('/products')} title={"Continue Shopping"} />
+                            <Button className={"mt-10 bg-black"} onClick={() => handleClearCart()} title={"Clear Shopping Cart"} />
                         </div>
 
+                        <div className='mt-10 mb-5 px-5 ml-auto w-[30%] border border-gray-200 text-center p-2'>
+                            <div className='border-b border-b-gray-200 pb-4'>
+                                <div className="flex text-start items-center py-2">
+                                    <p className='text-base font-bold w-1/2  '>SUBTOTAL :</p>
+                                    <p >{cartData ? `$ ${cartData?.getCart?.total}` : <span>loading...</span>}</p>
+                                </div>
+                                <div className="flex text-start items-center py-2">
+                                    <p className='text-base font-bold w-1/2  '>SHIPPING CHARGE :</p>
+                                    <p >Free</p>
+                                </div>
+                            </div>
+                            <div className="flex text-start items-center py-2">
+                                <p className='text-lg font-bold w-1/2  '>TOTAL AMOUNT :</p>
+                                <div>{cartData ? `$ ${cartData.getCart.total}` : <span>loading...</span>}</div>
+                            </div>
+
+
+                        </div>
+                        <div className="w-[30%] mb-10 ml-auto mt-1">
+                            <button onClick={() => handlePlaceOrder()} className='w-full px-4 py-2 text-white bg-[#ab7a5f] rounded-sm'>
+                                Place Order
+                            </button>
+                        </div>
 
                     </div>
-                    <div className="w-[30%] mb-10 ml-auto mt-1">
-                        <button onClick={() => handlePlaceOrder()} className='w-full px-4 py-2 text-white bg-[#ab7a5f] rounded-sm'>
-                            Place Order
-                        </button>
-                    </div>
+                )
+                    :
 
-                </div>
+                    (
+                        <h1 className="text-4xl font-bold text-center flex justify-center items-center min-h-80">add items to cart</h1>
+                    )
+                }
             </div>
         </>
     );

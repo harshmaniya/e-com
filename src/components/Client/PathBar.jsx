@@ -8,7 +8,6 @@ const PathBar = () => {
 
     const pathName = usePathname();
     const segments = pathName.split('/');
-    console.log("🚀 ~ PathBar ~ pathName:", pathName)
 
     return (
         <>

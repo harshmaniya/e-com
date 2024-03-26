@@ -35,8 +35,8 @@ const Login = () => {
             }
         }).then(async (res) => {
             localStorage.setItem("accessToken", res.data.login.accessToken)
-            toast.success("login successfully");
             router.push('/')
+            toast.success("login successfully");           
         }).catch((err) => {
             toast.error(err.message);
         })
@@ -45,7 +45,7 @@ const Login = () => {
         <div className="container h-screen flex justify-center items-center  mx-auto">
             <div className="w-1/3 p-6 px-10 text-[#ab7a5f] rounded-lg shadow-2xl bg-white">
                 <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-                <form id="registerForm" className="space-y-4" onSubmit={handleSubmit}>
+                <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="email" className="block text-sm font-semibold">Email</label>
                         <input

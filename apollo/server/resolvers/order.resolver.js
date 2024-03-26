@@ -1,5 +1,5 @@
 import { combineResolvers } from "graphql-resolvers";
-import { isAuthenticatedUser } from '@/apollo/server/utils/middleware';
+import { isAuthenticatedUser, isAuthenticatedAdmin } from '@/apollo/server/utils/middleware';
 import { Cart, Order } from "@/lib/models";
 
 // done
@@ -44,9 +44,10 @@ const getOrder = combineResolvers(isAuthenticatedUser, async (_, args, { user })
 });
 
 // done
-const getAllOrders = combineResolvers(isAuthenticatedUser, async (_, args, { user }) => {
+const getAllOrders = combineResolvers(isAuthenticatedAdmin, async (_, args) => {
     try {
-        const orders = await Order.find({ user: user._id })
+
+        const orders = await Order.find({})
             .populate({ path: "products", populate: [{ path: "pid color" }] })
         if (!orders) return new Error("Order not found");
         return orders;
@@ -56,10 +57,24 @@ const getAllOrders = combineResolvers(isAuthenticatedUser, async (_, args, { use
     }
 });
 
+// done
+const getAllOrdersByUser = combineResolvers(isAuthenticatedUser, async (_, args, { user }) => {
+    try {
+        const orders = await Order.find({ user: user._id })
+            .populate({ path: "products", populate: [{ path: "pid color" }] })
+        if (!orders) return new Error("Order not found");
+        return orders;
+    } catch (error) {
+        console.error("Error fetching all orders:", error.message);
+        return new Error("Failed to fetch orders");
+    }
+})
+
 export const orderResolvers = {
     Query: {
         getOrder,
-        getAllOrders
+        getAllOrders,
+        getAllOrdersByUser
     },
     Mutation: {
         createOrder

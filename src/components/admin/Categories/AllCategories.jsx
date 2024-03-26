@@ -1,42 +1,16 @@
 'use client';
 
-
+import { GET_ALL_CATEGORIES } from "@/apollo/client/query";
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
+import Loader from "../../Loader";
 
-const categoryData = [
-    {
-        id: '1',
-        name: "Free package"
-    },
-    {
-        id: '1',
-        name: "Free package"
-    },
-    {
-        id: '1',
-        name: "Free package"
-    },
-    {
-        id: '1',
-        name: "Free package"
-    },
-    {
-        id: '1',
-        name: "Free package"
-    },
-    {
-        id: '1',
-        name: "Free package"
-    },
-    {
-        id: '1',
-        name: "Free package"
-    }
-];
 
 const AllCategories = () => {
 
     const router = useRouter();
+
+    const { data, loading, error } = useQuery(GET_ALL_CATEGORIES);
 
     return (
         <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -53,7 +27,10 @@ const AllCategories = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {categoryData.map((category, key) => (
+                        {
+                        !loading ? data.getAllCategories.length ?
+                        (
+                            data?.getAllCategories?.map((category, key) => (
                             <tr key={key}>
 
                                 <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
@@ -100,7 +77,12 @@ const AllCategories = () => {
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        ))
+                    )
+                    : <p>data not found!</p>
+                    :
+                    <Loader />
+                    }
                     </tbody>
                 </table>
             </div>
@@ -108,4 +90,4 @@ const AllCategories = () => {
     );
 };
 
-export default AllCategories;
+export default AllCategories;

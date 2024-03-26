@@ -1,16 +1,18 @@
+'use client'
+
 import React from 'react'
-import TableThree from '@/src/components/admin/Tables/TableThree'
+import AllProducts from '@/src/components/admin/Product/AllProducts'
 import DefaultLayout from '@/src/components/admin/Layouts/DefaultLayout'
 
 
-const AllProducts = () => {
+const Page = () => {
     return (
         <>
             <DefaultLayout>
-                <TableThree />
+                <AllProducts />
             </DefaultLayout>
         </>
     )
 }
 
-export default AllProducts
+export default Page

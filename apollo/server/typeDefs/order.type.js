@@ -49,7 +49,8 @@ input ProductOrderInput {
 
 type Query {
   getOrder(orderId: ID!): Order
-  getAllOrders: [Order!]!
+  getAllOrders(status: OrderStatus): [Order!]!
+  getAllOrdersByUser: [Order!]!
 }
 
 type Mutation {

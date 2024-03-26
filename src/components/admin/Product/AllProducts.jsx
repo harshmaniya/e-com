@@ -1,38 +1,17 @@
 'use client';
 
 import Image from "next/image";
+import { GET_ALL_PRODUCTS } from "@/apollo/client/query";
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
-
-const packageData = [
-  {
-    name: "Free package",
-    price: 0.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Paid",
-  },
-  {
-    name: "Standard Package",
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Paid",
-  },
-  {
-    name: "Business Package",
-    price: 99.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Unpaid",
-  },
-  {
-    name: "Standard Package",
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Pending",
-  },
-];
+import Loader from "../../Loader";
 
 const AllProducts = () => {
 
   const router = useRouter();
+
+  const { data, loading, error } = useQuery(GET_ALL_PRODUCTS);
+  console.log("🚀 ~ AllProducts ~ data:", data)
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -67,21 +46,24 @@ const AllProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {packageData.map((packageItem, key) => (
+            {
+            !loading ? data.getAllProducts.length ?
+            (
+              data?.getAllProducts?.map((packageItem, key) => (
               <tr key={key}>
 
-                <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">
-                    <Image src={""} alt="product" width={60} height={60} />
+                    <Image src={packageItem.images[0]} alt="product" width={60} height={60} />
                   </h5>
                 </td>
-                <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">
                     {packageItem.name}
                   </h5>
                   <p className="text-sm">${packageItem.price}</p>
                 </td>
-                <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">
                     ${packageItem.price}
                   </h5>
@@ -175,7 +157,12 @@ const AllProducts = () => {
                   </div>
                 </td>
               </tr>
-            ))}
+            ))
+          )
+          : <p>data not found!</p>
+                    :
+                    <Loader />
+        }
           </tbody>
         </table>
       </div>
@@ -183,4 +170,4 @@ const AllProducts = () => {
   );
 };
 
-export default AllProducts;
+export default AllProducts;
