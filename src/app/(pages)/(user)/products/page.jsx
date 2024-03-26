@@ -6,6 +6,7 @@ import { GET_ALL_PRODUCTS } from '@/apollo/client/query';
 import ProductCard from '@/src/components/Client/ProductCard';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
+import Loader from '@/src/components/Loader';
 
 const products = () => {
 
@@ -61,7 +62,7 @@ const products = () => {
                                 </Link>
                             ))
                             :
-                            <h1>loading...</h1>
+                            <Loader />
                         }
                     </div>
                 </div>

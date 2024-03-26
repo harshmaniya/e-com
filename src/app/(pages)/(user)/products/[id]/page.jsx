@@ -7,6 +7,7 @@ import { GET_PRODUCT, ADD_TO_CART } from '@/apollo/client/query';
 import { useMutation, useQuery } from '@apollo/client';
 import Button from '@/src/components/Client/Button';
 import { useRouter } from 'next/navigation';
+import Loader from '@/src/components/Loader';
 
 const Product = ({ params }) => {
 
@@ -136,7 +137,8 @@ const Product = ({ params }) => {
                     </div>
                 </div>
                 :
-                <p>Loading...</p>}
+                <Loader />
+            }
         </>
     );
 };
