@@ -1,15 +1,35 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
+// import { useForm } from "react-hook-form"
 import Input from '../FormElements/input';
-import { useMutation } from '@apollo/client';
-import { ADD_CATEGORY } from '@/apollo/client/query';
+import { useMutation,useQuery } from '@apollo/client';
+import { ADD_CATEGORY,GET_CATEGORY_BY_ID,UPDATE_CATEGORY } from '@/apollo/client/query';
 import { toast } from 'react-toastify';
+import { useRouter } from "next/navigation";
 
-const AddCategory = () => {
+const AddCategory = ({id}) => {
 
-    const [formData, setFormData] = useState('');   
+    const [formData, setFormData] = useState('');
+    const [submitType,setSubmitType]=useState("submit")
+    console.log("🚀 ~ AddCategory ~ submitType:", submitType)
+
+    const {data,error,loading,refetch}=useQuery(GET_CATEGORY_BY_ID,{
+        variables:{
+            id
+        }
+    })
+    const router=useRouter()
     const [AddCategory] = useMutation(ADD_CATEGORY);
+    const [UpdateCategory] = useMutation(UPDATE_CATEGORY);
+
+    useEffect(() => {
+        // Check if data is not null and getBrandById is not null
+        if (data && data.getCategoryById) {
+            setFormData(data.getCategoryById.name);
+            setSubmitType("edit")
+        }
+    }, [data]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,18 +37,33 @@ const AddCategory = () => {
             toast.error('Category Name is required.');
             return;
         }
+       if(submitType==="submit"){
         try {
             await AddCategory({
                 variables: {
                     name: formData,
                 },
-            }).then(() => {
-                toast.success('Category Added successfully');
-            })                    
+            });
+            toast.success('Category Added successfully');
+            // Reset form after successful submission if needed
             setFormData('');
         } catch (err) {
             toast.error(err.message);
         }
+       }else if(submitType==="edit"){
+        UpdateCategory({
+            variables:{
+                id,name:formData
+            }
+        }).then((res) => {
+            console.log("🚀 ~ handleSubmit ~ res:", res)
+            setSubmitType("submit")
+            router.push("/admin/categories")
+        
+        }).catch((err)=>{
+            alert(err.message)
+        })
+       }
     };
 
     return (
@@ -57,7 +92,7 @@ const AddCategory = () => {
                             />
 
                             <button type="submit" className="flex w-1/3 justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                                Add Category
+                             { submitType==="edit"?"Edit Category":"  Add Category"}
                             </button>
                         </div>
                     </form>

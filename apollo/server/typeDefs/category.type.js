@@ -9,6 +9,7 @@ type Category {
   
 type Query {
     getAllCategories: [Category]
+    getCategoryById(_id: ID!): Category
 }
 
 type Mutation {

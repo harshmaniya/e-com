@@ -5,14 +5,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
 import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
+import { useMutation } from '@apollo/client';
+import { ADD_TO_WISHLIST } from '@/apollo/client/query';
 
 
-const ProductCard = ({ product, goToTheProduct }) => {
-  const [isLiked, setIsLiked] = useState(false);
-  console.log("🚀 ~ file: ProductCard.jsx:8 ~ card ~ isLiked:", isLiked)
+const ProductCard = ({ product, goToTheProduct, wishListed,refetch }) => {
+  const [isLiked, setIsLiked] = useState( wishListed ? true : false);
+  const [AddToWishlist] = useMutation(ADD_TO_WISHLIST)
 
-  const toggleLike = () => {
-    setIsLiked(prev => !prev);
+  const toggleLike = async () => {
+    try {
+      await AddToWishlist({
+        variables: {
+          productId: product._id
+        }
+      }).then((res) => {       
+        setIsLiked(prev => !prev);
+        refetch()
+      }).catch((err) => {
+        console.error("qqqqqqqqqqqqqq", err);
+      })
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

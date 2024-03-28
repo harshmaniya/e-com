@@ -133,9 +133,10 @@ const getCart = combineResolvers(isAuthenticatedUser, async (_, args, { user }) 
     }
 })
 
+
 export const cartResolver = {
     Query: {
-        getCart
+        getCart       
     },
     Mutation: {
         addToCart,

@@ -6,13 +6,26 @@ import { isAuthenticatedUser } from '@/apollo/server/utils/middleware';
 const addToWishlist = combineResolvers(isAuthenticatedUser, async (_, { productId }, { user }) => {
     try {
         const { _id } = user
-        const wishlist = await Wishlist.findOneAndUpdate(
-            { user: _id },
-            { $addToSet: { products: productId } },
-            { new: true, upsert: true }
-        )
-        if (!wishlist) return new Error("Wishlist not found");
-        return "product added to wishlist successfully";
+        const isExist = await Wishlist.findOne({ user: _id, products: { $in: [productId] } });
+        console.log("🚀 ~ addToWishlist ~ isExist:", isExist)
+        let wishlist
+        if (isExist) {
+            wishlist = await Wishlist.findOneAndUpdate(
+                { user: _id },
+                { $pull: { products: productId } },
+                { new: true }
+            )
+            if (!wishlist) return new Error("something went wrong!");
+            return "product removed from wishlist";
+        } else {
+            wishlist = await Wishlist.findOneAndUpdate(
+                { user: _id },
+                { $addToSet: { products: productId } },
+                { new: true, upsert: true }
+            )
+            if (!wishlist) return new Error("something went wrong!");
+            return "product added to wishlist";
+        }
     } catch (error) {
         console.error("Error adding product to wishlist:", error.message);
         throw new Error("Failed to add product to wishlist");
@@ -33,6 +46,19 @@ const getWishlist = combineResolvers(isAuthenticatedUser, async (_, args, { user
 });
 
 // done
+const getWishlistArray = combineResolvers(isAuthenticatedUser, async (_, args, { user }) => {
+    try {
+        const { _id } = user;
+        const wishlist = await Wishlist.findOne({ user: _id })
+        if (!wishlist) return new Error("Wishlist not found");
+        return wishlist;
+    } catch (error) {
+        console.error("Error fetching wishlist:", error.message);
+        throw new Error("Failed to fetch wishlist");
+    }
+});
+
+// done - non usable
 const removeFromWishlist = combineResolvers(isAuthenticatedUser, async (_, { productId }, { user }) => {
     try {
         const wishlist = await Wishlist.findOneAndUpdate(
@@ -51,7 +77,8 @@ const removeFromWishlist = combineResolvers(isAuthenticatedUser, async (_, { pro
 
 export const wishlistResolver = {
     Query: {
-        getWishlist
+        getWishlist,
+        getWishlistArray
     },
     Mutation: {
         addToWishlist,

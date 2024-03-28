@@ -16,7 +16,9 @@ export default function RootLayout({ children }) {
         {/* <ApolloProvider client={client}> */}
             <Navbar />
             {/* <PathBar /> */}
+            <div className="min-h-[75.5vh]">
             {children}
+            </div>
             <Footer />     
           {/* <ToastContainer /> */}
         {/* </ApolloProvider> */}

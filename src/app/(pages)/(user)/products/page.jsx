@@ -1,11 +1,10 @@
 'use client';
 
-import React, { Suspense, useState } from 'react'
+import React, { useState } from 'react'
 import SideBar from '@/src/components/Client/SideBar'
-import { GET_ALL_PRODUCTS } from '@/apollo/client/query';
+import { GET_ALL_PRODUCTS, GET_WISHLIST_ARRAY } from '@/apollo/client/query';
 import ProductCard from '@/src/components/Client/ProductCard';
 import { useQuery } from '@apollo/client';
-import Loader from '@/src/components/Loader';
 import { useRouter } from 'next/navigation';
 
 const products = () => {
@@ -18,7 +17,9 @@ const products = () => {
     const [isFreeShippingSelected, setIsFreeShippingSelected] = useState(false);
     const [search, setSearch] = useState("");
 
-    const { data } = useQuery(GET_ALL_PRODUCTS, {
+    const { data: wishListData, error, loading } = useQuery(GET_WISHLIST_ARRAY)  
+
+    const { data, refetch } = useQuery(GET_ALL_PRODUCTS, {
         variables: {
             input: {
                 brands: selectedBrands,
@@ -32,15 +33,12 @@ const products = () => {
 
     const goToTheProduct = (id) => {
         router.push(`products/${id}`)
-    }
-
-
-    console.log("🚀 ~ products ~ data:", data?.getAllProducts)
-
+    }   
+   
     return (
 
 
-        <div className="px-34">
+        <div className="px-34 py-10">
             <div className="flex p-4">
                 <div className="w-1/4">
 
@@ -61,9 +59,11 @@ const products = () => {
                 <div className='w-3/4 grid grid-cols-4  gap-5'>
                     {data?.getAllProducts && data?.getAllProducts?.map((product) => (
                         <div key={product?._id}>
-
-                            <ProductCard product={product} goToTheProduct={goToTheProduct} />
-
+                            <ProductCard
+                                product={product}
+                                goToTheProduct={goToTheProduct}
+                                wishListed={wishListData?.getWishlistArray?.products?.includes(product?._id)}
+                                refetch={refetch} />
                         </div>
                     ))}
                 </div>

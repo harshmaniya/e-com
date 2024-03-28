@@ -30,7 +30,7 @@ const addBrand = combineResolvers(isAuthenticatedAdmin, async (_, args) => {
 });
 
 // done
-const getAllBrands = async (_, args) => {    
+const getAllBrands = async (_, args) => {
     try {
         const getAllBrands = await Brand.find()
         if (!getAllBrands) return new Error("not found brand!")
@@ -85,9 +85,21 @@ const deleteBrand = combineResolvers(isAuthenticatedAdmin, async (_, { _id }) =>
     }
 });
 
+// done - fix
+const getBrandById = async (_, args) => {
+    console.log("🚀 ~ getBrandById ~ args:", args)
+
+    const id = args._id
+    const brand = await Brand.findById(id)
+
+    return brand
+    console.log("🚀 ~ getBrandById ~ brand:", brand)
+}
+
 export const brandResolver = {
     Query: {
-        getAllBrands
+        getAllBrands,
+        getBrandById
     },
     Mutation: {
         addBrand,

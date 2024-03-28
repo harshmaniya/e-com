@@ -42,6 +42,17 @@ const getAllCategories = async () => {
     }
 };
 
+// done - fix
+const getCategoryById = async (_, args) => {
+    console.log("🚀 ~ getBrandById ~ args:", args)
+
+    const id = args._id
+    const category = await Category.findById(id)
+
+    return category
+    console.log("🚀 ~ getcategoryById ~ category:", category)
+}
+
 // done
 const updateCategory = combineResolvers(isAuthenticatedAdmin, async (_, { _id, name }) => {
     try {
@@ -84,7 +95,8 @@ const deleteCategory = combineResolvers(isAuthenticatedAdmin, async (_, { _id })
 
 export const categoryResolver = {
     Query: {
-        getAllCategories
+        getAllCategories,
+        getCategoryById
     },
     Mutation: {
         addCategory,

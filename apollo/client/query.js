@@ -31,6 +31,15 @@ mutation DeleteBrand($id: ID!) {
   deleteBrand(_id: $id)
 }`
 
+export const GET_BRAND_BY_ID = gql`
+  query GetBrandById($id: ID!) {
+  getBrandById(_id: $id) {
+    _id
+    name
+  }
+}
+`
+
 
 // CATEGORIES //
 
@@ -62,6 +71,15 @@ export const DELETE_CATEGORY = gql`
 mutation DeleteCategory($id: ID!) {
   deleteCategory(_id: $id)
 }`
+
+export const GET_CATEGORY_BY_ID = gql`
+  query GetCategoryById($id: ID!) {
+  getCategoryById(_id: $id) {
+    name
+    _id
+  }
+}`
+
 
 
 // PRODUCTS //
@@ -233,6 +251,9 @@ query GetCart {
 }`
 
 
+
+
+
 // ORDER //
 
 export const CREATE_ORDER = gql`
@@ -298,7 +319,34 @@ query GetAllOrders {
   }
 }`
 
-
+export const GET_ALL_ORDERS_BY_USER = gql`
+query GetAllOrdersByUser {
+  getAllOrdersByUser {
+    _id
+    products {
+      pid {
+        _id
+        name
+        price
+        images   
+      }
+      color {
+        _id
+        name
+        hexCode
+      }
+      qty
+    }
+    order_date
+    status
+    shipping_address
+    payment_method
+    payment_status
+    total
+    createdAt
+    updatedAt
+  }
+}`
 
 
 // WISHLIST //
@@ -323,6 +371,14 @@ query GetWishlist {
       price
       images      
     }
+  }
+}`
+
+export const GET_WISHLIST_ARRAY = gql`
+query GetWishlistArray {
+  getWishlistArray {
+    _id
+    products
   }
 }`
 

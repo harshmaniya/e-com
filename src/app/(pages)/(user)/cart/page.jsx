@@ -3,7 +3,7 @@
 import Button from '@/src/components/Client/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { GET_CART, INCREASE_QTY, DECREASE_QTY, REMOVE_FROM_CART, CLEAR_CART, CREATE_ORDER, CREATE_CHECKOUT_SESSION } from '@/apollo/client/query';
+import { GET_CART, INCREASE_QTY, DECREASE_QTY, REMOVE_FROM_CART, CLEAR_CART, CREATE_CHECKOUT_SESSION } from '@/apollo/client/query';
 import { useMutation, useQuery } from '@apollo/client';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
@@ -19,8 +19,7 @@ const Cart = () => {
     const [DecreaseQty] = useMutation(DECREASE_QTY)
     const [RemoveFromCart] = useMutation(REMOVE_FROM_CART)
     const [ClearCart] = useMutation(CLEAR_CART)
-
-    // const [CreateOrder] = useMutation(CREATE_ORDER)
+   
     const [CreateCheckoutSession] = useMutation(CREATE_CHECKOUT_SESSION)
 
     const handleRemoveItem = (id) => {
@@ -30,8 +29,8 @@ const Cart = () => {
                     id
                 }
             }).then((res) => {
-                toast.success(res.data.removeFromCart)
                 refetchCart()
+                toast.success(res.data.removeFromCart)
             }).catch((err) => {
                 toast.error(err.message)
             })
@@ -45,8 +44,8 @@ const Cart = () => {
                     id
                 }
             }).then((res) => {
-                toast.success(res.data.increaseQty)
                 refetchCart()
+                toast.success(res.data.increaseQty)
             }).catch((err) => {
                 toast.error(err.message)
             })
@@ -60,6 +59,7 @@ const Cart = () => {
                     id
                 }
             }).then((res) => {
+                refetchCart()
                 toast.success(res.data.decreaseQty)
             }).catch((err) => {
                 toast.error(err.message)
@@ -69,6 +69,7 @@ const Cart = () => {
 
     const handleClearCart = () => {
         ClearCart().then((res) => {
+            refetchCart()
             toast.success(res.data.clearCart)
         }).catch((err) => {
             toast.error(err.message)
@@ -76,20 +77,10 @@ const Cart = () => {
     }
 
     const handlePlaceOrder = async () => {
-
         const createSession = await CreateCheckoutSession()
         console.log("🚀 ~ handlePlaceOrder ~ createSession:", createSession)
         const sessionId = createSession.data.createCheckoutSession.sessionId
         redirectToCheckout(sessionId)
-
-        // CreateOrder({
-        //     variables: {
-        //         input: {
-        //             products: cartData.getCart.products
-        //         }
-        //     }
-        // })
-        // router.push('/checkout')
     }
 
     useEffect(() => {

@@ -7,8 +7,14 @@ const Wishlist = gql`
     user: User!
   }
 
+  type WishlistArray {
+    _id: ID!
+    products: [ID!]
+  }
+
   type Query {
     getWishlist: Wishlist
+    getWishlistArray: WishlistArray
   }
 
   type Mutation {
