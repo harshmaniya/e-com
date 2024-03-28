@@ -3,31 +3,24 @@ import { combineResolvers } from "graphql-resolvers";
 import { isAuthenticatedAdmin } from '@/apollo/server/utils/middleware';
 
 // done
-const addColor = async (_, { input }) => {
+const addColor = combineResolvers(isAuthenticatedAdmin, async (_, { input }) => {
+  console.log("🚀 ~ addColor ~ input:", input[0])
   try {
-    const { name, hexCode } = input;
+    
+    input.forEach(async (element) => {
 
-    // Data validation
-    if (!name || !hexCode) {
-      return new Error("Color name and hex code are required.");
-    }
+      const allColors = await Color.findOne({ $or: [{ name: element.name }, { hexCode: element.hexCode }] });
+      if (!allColors) {
+        await Color.create({ name: element.name, hexCode: element.hexCode });
+      }
 
-    // Check if color already exists
-    const existingColor = await Color.findOne({ name, hexCode });
-    if (existingColor) {
-      return new Error("Color already exists!");
-    }
-
-    // Create new color
-    const newColor = await Color.create({ name, hexCode });
-    console.log("New color created:", newColor);
-
-    return newColor;
+    });
+    return "Color added successfully!";
   } catch (error) {
     console.error("Error adding color:", error);
     return new Error("Failed to add color");
   }
-};
+});
 
 // done
 const getAllColors = async () => {
@@ -38,6 +31,19 @@ const getAllColors = async () => {
     console.log("Fetched colors:", allColors);
 
     return allColors;
+  } catch (error) {
+    console.error("Error fetching colors:", error.message);
+    return new Error("Failed to fetch colors");
+  }
+};
+
+// done
+const isColorExist = async (_, { input }) => {
+  try {
+    const { name, hexCode } = input;
+    const allColors = await Color.findOne({ $or: [{ name: name }, { hexCode: hexCode }] });
+    if (!allColors) return "NOT_FOUND";
+    return "THIS_COLOR_ALREADY_EXISTS";
   } catch (error) {
     console.error("Error fetching colors:", error.message);
     return new Error("Failed to fetch colors");
@@ -92,6 +98,7 @@ export const colorResolver = {
   Mutation: {
     addColor,
     updateColor,
-    deleteColor
+    deleteColor,
+    isColorExist
   }
 };

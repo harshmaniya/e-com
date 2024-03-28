@@ -445,7 +445,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               {/* <!-- Menu Item Colors --> */}
               <SidebarLinkGroup
                 activeCondition={
-                  pathname === "/brands" || pathname.includes("brands")
+                  pathname === "/colors" || pathname.includes("colors")
                 }
               >
                 {(handleClick, open) => {
@@ -500,7 +500,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                         <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
                           <li>
                             <Link
-                              href="/forms/form-layout"
+                              href="/admin/colors"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/forms/form-layout" &&
                                 "text-white"
                                 } `}
@@ -510,7 +510,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                           </li>
                           <li>
                             <Link
-                              href="/forms/form-elements"
+                              href="/admin/colors/add"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/forms/form-elements" &&
                                 "text-white"
                                 }`}

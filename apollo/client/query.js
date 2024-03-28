@@ -167,6 +167,18 @@ query GetAllColors {
   }
 }`
 
+export const IS_COLOR_EXIST = gql`
+mutation IsColorExist($input: AddColorInput!) {
+  isColorExist(input: $input)
+}`
+
+export const ADD_COLOR = gql`
+mutation AddColor($input: [AddColorInput]) {
+  addColor(input: $input)
+}`
+
+
+
 // CART //
 
 export const ADD_TO_CART = gql`

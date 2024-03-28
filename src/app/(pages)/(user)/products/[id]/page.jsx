@@ -13,15 +13,16 @@ const Product = ({ params }) => {
 
     const router = useRouter()
 
-    const [color, setColor] = useState('');
+    const [selectedColor, setSelectedColor] = useState('');
     const [qty, setQty] = useState(1);
 
     const [AddToCart] = useMutation(ADD_TO_CART)
+
     const { data, loading } = useQuery(GET_PRODUCT, {
         variables: {
             id: params.id
         }
-    });
+    })
 
     const handleIncreaseQty = () => {
         setQty(prev => prev + 1);
@@ -36,7 +37,7 @@ const Product = ({ params }) => {
             variables: {
                 input: {
                     pid: data.getProduct?._id,
-                    color,
+                    color: selectedColor,
                     qty
                 }
             }
@@ -46,13 +47,13 @@ const Product = ({ params }) => {
         }).catch((err) => {
             toast.error(err.message)
         })
-    };
+    }
 
-    const [heroImg, setHeroImg] = useState(null);
+    const [heroImg, setHeroImg] = useState(null)
 
     useEffect(() => {
         if (data && data.getProduct && data.getProduct.images && data.getProduct.images.length > 0) {
-            setColor(data.getProduct.colors[0]?._id)
+            setSelectedColor(data.getProduct.colors[0]?._id)
             setHeroImg(data.getProduct.images[0])
         }
     }, [data]);
@@ -113,13 +114,36 @@ const Product = ({ params }) => {
                             <div className='flex md:w-1/2'>
                                 <div className='flex gap-2 items-center'>
                                     <h3 className='text-lg font-bold'>Colors :</h3>
-                                    {data?.getProduct?.colors?.map((itemColor) => (
+                                    {data?.getProduct?.colors?.map((color, index) => (
+                                        <div
+                                            key={index}
+                                            onClick={() => setSelectedColor((prev) => prev == color._id ? '' : color._id)}
+                                            className="w-5 h-5 relative bg-white rounded-full p-2"
+                                            style={{ backgroundColor: color.hexCode }}
+                                        >
+                                            {selectedColor === color._id.toString() && (
+                                                <>
+                                                    <div className="absolute inset-0 ring-2 ring-red-900 rounded-full"></div>
+                                                    <svg
+                                                        className="text-white"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        style={{ width: '60%', height: '60%' }}
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                </>
+                                            )}
+                                        </div>
+                                    ))}
+                                    {/* {data?.getProduct?.colors?.map((itemColor) => (
                                         <div
                                             onClick={() => setColor(itemColor._id)}
                                             key={itemColor._id}
                                             style={{ width: '20px', height: '20px', backgroundColor: itemColor.hexCode, borderRadius: '50%', padding: '10px' }}>
                                         </div>
-                                    ))}
+                                    ))} */}
                                 </div>
                                 <p>{data?.getProduct?.color?.name}</p>
                             </div>

@@ -3,7 +3,9 @@ import { combineResolvers } from "graphql-resolvers";
 import { isAuthenticatedAdmin } from '@/apollo/server/utils/middleware';
 
 // done
-const addProduct = combineResolvers(isAuthenticatedAdmin, async (_, { input }) => {
+const addProduct =
+//  combineResolvers(isAuthenticatedAdmin, 
+    async (_, { input }) => {
     try {
         const { sku } = input;
 
@@ -42,7 +44,8 @@ const addProduct = combineResolvers(isAuthenticatedAdmin, async (_, { input }) =
         console.error("Error adding product:", error);
         return new Error("Failed to add product");
     }
-});
+}
+// );
 
 // done
 const getAllProducts = async (_, args) => {

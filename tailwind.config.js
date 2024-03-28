@@ -1,4 +1,6 @@
 // import { Config } from "tailwindcss";
+
+import { withUt } from "uploadthing/tw";
 import defaultTheme from "tailwindcss/defaultTheme";
 
 const config = {
@@ -332,4 +334,4 @@ const config = {
   },
   plugins: [],
 };
-export default config;
+export default withUt(config);

@@ -1,6 +1,5 @@
 'use client'
 
-
 import React, { useState } from 'react';
 import Input from '../FormElements/input';
 import { useMutation } from '@apollo/client';
@@ -8,8 +7,7 @@ import { ADD_BRAND } from '@/apollo/client/query';
 import { toast } from 'react-toastify';
 
 const AddBrand = () => {
-    const [formData, setFormData] = useState('');
-    console.log("🚀 ~ AddBrand ~ formData:", formData)
+    const [formData, setFormData] = useState('');  
     const [addBrand] = useMutation(ADD_BRAND);
 
     const handleSubmit = async (e) => {
@@ -24,8 +22,7 @@ const AddBrand = () => {
                     name: formData,
                 },
             });
-            toast.success('Brand Added successfully');
-            // Reset form after successful submission if needed
+            toast.success('Brand Added successfully');         
             setFormData('');
         } catch (err) {
             toast.error(err.message);
@@ -51,7 +48,6 @@ const AddBrand = () => {
                             placeholder="Enter brand name"
                             onChange={(e)=>setFormData(e.target.value)}
                             className={"w-full mb-6"}
-                            // value={formData.name}    
                         />
 
                         <button

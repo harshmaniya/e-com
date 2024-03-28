@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react';
-// import { useForm } from "react-hook-form"
 import Input from '../FormElements/input';
 import { useMutation } from '@apollo/client';
 import { ADD_CATEGORY } from '@/apollo/client/query';
@@ -9,8 +8,7 @@ import { toast } from 'react-toastify';
 
 const AddCategory = () => {
 
-    const [formData, setFormData] = useState('');
-    console.log("🚀 ~ AddCategory ~ formData:", formData)
+    const [formData, setFormData] = useState('');   
     const [AddCategory] = useMutation(ADD_CATEGORY);
 
     const handleSubmit = async (e) => {
@@ -24,9 +22,9 @@ const AddCategory = () => {
                 variables: {
                     name: formData,
                 },
-            });
-            toast.success('Category Added successfully');
-            // Reset form after successful submission if needed
+            }).then(() => {
+                toast.success('Category Added successfully');
+            })                    
             setFormData('');
         } catch (err) {
             toast.error(err.message);

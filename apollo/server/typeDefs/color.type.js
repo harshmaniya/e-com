@@ -20,13 +20,14 @@ input UpdateColorInput {
 }
 
 type Query {
-    getAllColors: [Color]
+    getAllColors: [Color]   
 }
 
 type Mutation {
-    addColor(input: AddColorInput!): Color
+    addColor(input: [AddColorInput]): String
     updateColor(input: UpdateColorInput!): Color
     deleteColor(_id: ID!): String
+    isColorExist(input: AddColorInput!): String
 }
 `;
 

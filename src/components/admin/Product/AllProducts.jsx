@@ -4,7 +4,6 @@ import Image from "next/image";
 import { GET_ALL_PRODUCTS } from "@/apollo/client/query";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
-import Loader from "../../Loader";
 
 const AllProducts = () => {
 
@@ -161,7 +160,7 @@ const AllProducts = () => {
           )
           : <p>data not found!</p>
                     :
-                    <Loader />
+                    null
         }
           </tbody>
         </table>

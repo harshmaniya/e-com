@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --experimental-https",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -13,9 +13,11 @@
     "@apollo/server": "^4.10.0",
     "@as-integrations/next": "^3.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-regular-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@stripe/stripe-js": "^3.0.10",
+    "@uploadthing/react": "^6.4.1",
     "apexcharts": "^3.45.2",
     "apollo-cache-persist": "^0.1.1",
     "apollo-server": "^3.13.0",
@@ -39,7 +41,8 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.1",
     "react-toastify": "^10.0.5",
-    "stripe": "^14.21.0"
+    "stripe": "^14.21.0",
+    "uploadthing": "^6.7.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",

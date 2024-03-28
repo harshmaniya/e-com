@@ -58,13 +58,12 @@ const products = () => {
                     />
                 </div>
 
-                <div className='w-3/4 grid grid-cols-4 grid-flow-col gap-5'>
-
+                <div className='w-3/4 grid grid-cols-4  gap-5'>
                     {data?.getAllProducts && data?.getAllProducts?.map((product) => (
-                        <div key={product?._id} onClick={() => goToTheProduct(product._id)}>
-                            <Suspense fallback={<Loader />}>
-                                <ProductCard product={product} />
-                            </Suspense>
+                        <div key={product?._id}>
+
+                            <ProductCard product={product} goToTheProduct={goToTheProduct} />
+
                         </div>
                     ))}
                 </div>

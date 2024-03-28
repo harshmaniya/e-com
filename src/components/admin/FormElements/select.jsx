@@ -2,14 +2,7 @@
 
 import React, { useState } from 'react'
 
-const Select = ({ selectData, className, label, defaultValue, required, ...rest }) => {
-
-    const [selectedOption, setSelectedOption] = useState(defaultValue)
-    const [isOptionSelected, setIsOptionSelected] = useState(false)
-
-    const changeTextColor = () => {
-        setIsOptionSelected(true)
-    }
+const Select = ({ selectData, className, label, defaultValue, required, ...rest }) => {    
 
     return (
         <>
@@ -19,19 +12,12 @@ const Select = ({ selectData, className, label, defaultValue, required, ...rest 
                 </label>
 
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
-                    <select
-                        value={selectedOption}
-                        onChange={(e) => {
-                            setSelectedOption(e.target.value);
-                            changeTextColor();
-                        }}
-                        className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${isOptionSelected ? "text-black dark:text-white" : ""
-                            }`}
-                    >
-                        <option value="" disabled className="text-body dark:text-bodydark">
+                    <select                    
+                        {...rest}
+                        className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                        <option value="" className="text-body dark:text-bodydark">
                             {defaultValue}
                         </option>
-
                         {selectData?.map((data) => (
                             <option value={data._id} className="text-body dark:text-bodydark">
                                 {data.name}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import client from "@/apollo/client/client"
+import client from "../../apollo/client/client"
 import { ApolloProvider } from "@apollo/client"
 import dynamic from 'next/dynamic';
 import 'react-toastify/dist/ReactToastify.css';
