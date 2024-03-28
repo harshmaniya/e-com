@@ -32,13 +32,12 @@ mutation DeleteBrand($id: ID!) {
 }`
 
 export const GET_BRAND_BY_ID = gql`
-  query GetBrandById($id: ID!) {
+query GetBrandById($id: ID!) {
   getBrandById(_id: $id) {
     _id
-    name
-  }
-}
-`
+    name
+  }
+}`
 
 
 // CATEGORIES //
@@ -73,11 +72,11 @@ mutation DeleteCategory($id: ID!) {
 }`
 
 export const GET_CATEGORY_BY_ID = gql`
-  query GetCategoryById($id: ID!) {
-  getCategoryById(_id: $id) {
-    name
-    _id
-  }
+query GetCategoryById($id: ID!) {
+getCategoryById(_id: $id) {
+  name
+  _id
+}
 }`
 
 
